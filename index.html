@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Náutica Multi-Tramo</title>
     <style>
-        /* Estilos Base y Tema Oscuro (DEFAULT: PARANÁ - Gris) */
+        /* Estilos Base y Tema Oscuro */
         body { 
             font-family: Arial, sans-serif; 
             padding: 20px; 
             background-color: #333333; 
             color: #ffffff;
-            transition: background-color 0.5s ease; /* Transición suave del fondo */
+            transition: background-color 0.5s ease;
         }
         .container { 
             max-width: 480px; 
@@ -21,67 +21,37 @@
             border-radius: 8px;
             background-color: #444444; 
         }
-        /* Color Scheme 1: CANALES (Azul/Verde para diferenciación visual) */
+        /* Color Scheme 2: CANALES */
         body.scheme-canales {
-            background-color: #1a364a; /* Azul más oscuro */
+            background-color: #1a364a;
         }
         .scheme-canales .container {
             background-color: #2a4c61; 
         }
         .scheme-canales .tramo-info {
-            border-left-color: #00e0ff; /* Color cian */
+            border-left-color: #00e0ff;
         }
         
         /* Estilos del Logo, Menú y Controles */
-        #appLogo {
-            display: block; 
-            max-width: 100px; 
-            height: auto;
-            margin: 0 auto 15px auto; 
-        }
-        .tramo-selector {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #555;
-            border-radius: 4px;
-        }
-        .tramo-info {
-            background-color: #555555;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            border-left: 5px solid #00bcd4;
-            font-size: 0.9em;
-        }
-        .tab-button {
-            background-color: #666;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-right: 5px;
-        }
-        .tab-button.active {
-            background-color: #007bff; 
-        }
-        input, button { 
-            width: 100%; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            box-sizing: border-box;
-            background-color: #666666;
+        #appLogo { display: block; max-width: 100px; height: auto; margin: 0 auto 15px auto; }
+        .tramo-selector { margin-bottom: 20px; padding: 10px; border: 1px solid #555; border-radius: 4px; }
+        .tramo-info { background-color: #555555; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 5px solid #00bcd4; font-size: 0.9em; }
+        h2 { color: #ffffff; border-bottom: 2px solid #555; padding-bottom: 10px; margin-top: 0; display: flex; align-items: center; justify-content: center; }
+        .tab-button { background-color: #666; color: white; padding: 10px 15px; border: none; cursor: pointer; font-weight: bold; transition: background-color 0.3s; margin-right: 5px; }
+        .tab-button.active { background-color: #007bff; }
+        input, button { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; background-color: #666666; color: #ffffff; border: 1px solid #777; }
+        .resultado { font-size: 1.3em; font-weight: bold; margin-top: 20px; border-top: 2px solid #777; padding-top: 10px; color: #4CAF50; }
+        
+        /* ESTILO RESALTADO VERDE PARA BOTONES DE CÁLCULO */
+        #calculate-cd, #calculate-msbq {
+            background-color: #00a000; /* Verde resaltado */
             color: #ffffff;
-            border: 1px solid #777;
+            font-size: 1.1em;
+            font-weight: 900;
+            margin-top: 15px;
         }
-        .resultado { 
-            font-size: 1.3em; 
-            font-weight: bold; 
-            margin-top: 20px; 
-            border-top: 2px solid #777; 
-            padding-top: 10px; 
-            color: #4CAF50;
+        #calculate-cd:hover, #calculate-msbq:hover {
+            background-color: #007000;
         }
     </style>
 </head>
@@ -89,12 +59,12 @@
 
     <div class="container">
         <img src="logo (2).png" alt="Logo de la Asociación" id="appLogo">
-        <h2>Calculadora Náutica Multi-Tramo</h2>
+        <h2>Calculadora Náutica 🇦🇷</h2>
         
         <div class="tramo-selector">
             <label for="tramoSelect">Seleccionar Tramo / Reglamentación:</label>
             <select id="tramoSelect" onchange="cambiarTramo(this.value)">
-                <option value="parana">RÍO PARANÁ Y SUS BRAZOS (Corregido)</option>
+                <option value="parana">RÍO PARANÁ Y SUS BRAZOS</option>
                 <option value="canales">CANALES PUNTA INDIO, INTERMEDIO, etc.</option>
             </select>
         </div>
@@ -103,18 +73,17 @@
         </div>
 
         <div id="tab-menu" style="margin-bottom: 20px; text-align: center;">
-            <button class="tab-button active" onclick="mostrarPestana('tab-cd', this)">Cálculo de Calado (PE → CD)</button>
-            <button class="tab-button" onclick="mostrarPestana('tab-msbq', this)">Cálculo de Margen (CD → MSBQ)</button>
+            <button class="tab-button" id="btn-cd" onclick="mostrarPestana('tab-cd', this)">Cálculo de Calado (PE → CD)</button>
+            <button class="tab-button" id="btn-msbq" onclick="mostrarPestana('tab-msbq', this)">Cálculo de Margen (CD → MSBQ)</button>
         </div>
 
         <div id="tab-cd" class="tab-content">
             <h3>⚓ Calado de Despacho Máximo</h3>
-            
             <label for="peInput">Profundidad Efectiva (PE) en metros:</label>
             <input type="number" id="peInput" placeholder="Ej: 11.55" step="0.01">
-
-            <button onclick="calcularCaladoDespacho()">Calcular CD</button>
-
+            
+            <button id="calculate-cd" onclick="calcularCaladoDespacho()">Calcular Calado de Despacho</button>
+            
             <div class="resultado">
                 <p>Calado Máximo de Despacho:</p>
                 <span id="resultadoCD">---</span> metros
@@ -123,11 +92,10 @@
 
         <div id="tab-msbq" class="tab-content" style="display:none;">
             <h3>🚢 Margen de Seguridad Requerido</h3>
-
             <label for="caladoInput">Calado Propio (CD) en metros:</label>
             <input type="number" id="caladoInput" placeholder="Ej: 10.40" step="0.01">
             
-            <button onclick="calcularMargen()">Calcular MSBQ</button>
+            <button id="calculate-msbq" onclick="calcularMargen()">Calcular Margen de Seguridad</button>
             
             <div class="resultado">
                 <p>Margen de Seguridad a Aplicar:</p>
@@ -151,8 +119,75 @@
             }
         };
 
-        // Estado inicial
         let currentTramo = 'parana';
+
+        // -----------------------------------------------------------------
+        // FUNCIÓN DE TRUNCAMIENTO A 2 DECIMALES (Redondeo a la baja)
+        // -----------------------------------------------------------------
+        function truncateTwoDecimals(value) {
+            // Aplica Math.floor para asegurar que siempre redondee hacia abajo.
+            return Math.floor(value * 100) / 100;
+        }
+
+        // -----------------------------------------------------------------
+        // CÁLCULO: Profundidad Efectiva (PE) a Calado de Despacho (CD)
+        // -----------------------------------------------------------------
+        function calcularCaladoDespacho() {
+            const pe = parseFloat(document.getElementById('peInput').value); 
+            if (isNaN(pe) || pe <= 0) {
+                document.getElementById('resultadoCD').textContent = "Ingrese una PE válida.";
+                return;
+            }
+
+            const r = RULES[currentTramo];
+            let caladoDespacho;
+
+            if (pe <= r.breakpoints.R1_PE_LIMIT) {
+                caladoDespacho = pe - 0.60;
+            } else if (pe >= r.breakpoints.R2_PE_LIMIT) { 
+                caladoDespacho = pe / 1.10;
+            } else {
+                if (currentTramo === 'parana') {
+                    caladoDespacho = (pe + 30.48) / 4;
+                } else {
+                    caladoDespacho = (pe + 14.94) / 2.5;
+                }
+            }
+
+            if (caladoDespacho < 0) {
+                caladoDespacho = 0;
+            }
+            
+            // Muestra el resultado truncado a 2 decimales
+            const finalResult = truncateTwoDecimals(caladoDespacho);
+            document.getElementById('resultadoCD').textContent = finalResult.toFixed(2);
+        }
+
+        // -----------------------------------------------------------------
+        // CÁLCULO: Calado Propio (CD) a Margen de Seguridad (MSBQ)
+        // -----------------------------------------------------------------
+        function calcularMargen() {
+            const calado = parseFloat(document.getElementById('caladoInput').value);
+            if (isNaN(calado) || calado <= 0) {
+                document.getElementById('resultadoMSBQ').textContent = "Ingrese un calado válido.";
+                return;
+            }
+
+            const r = RULES[currentTramo];
+            let msbq;
+            
+            if (calado <= r.breakpoints.R2_CD_INCREMENT_START) {
+                msbq = 0.60;
+            } else if (calado >= r.breakpoints.R2_CD_LIMIT) {
+                msbq = calado * 0.10;
+            } else {
+                msbq = 0.60 + r.breakpoints.R2_CD_INCREMENT * (calado - r.breakpoints.R2_CD_INCREMENT_START);
+            }
+
+            // Muestra el resultado truncado a 2 decimales
+            const finalResult = truncateTwoDecimals(msbq);
+            document.getElementById('resultadoMSBQ').textContent = finalResult.toFixed(2);
+        }
 
         // -----------------------------------------------------------------
         // FUNCIONES DE CONTROL DE INTERFAZ
@@ -162,18 +197,17 @@
             currentTramo = tramo;
             const rules = RULES[tramo];
             
-            // 1. Actualizar el texto del tramo
             document.getElementById('tramoActualDisplay').textContent = rules.name;
-            
-            // 2. Actualizar el color de fondo (feedback visual)
             document.body.className = rules.class;
 
-            // 3. Recalcular si hay valores en los campos (opcional, pero útil)
             const peValue = document.getElementById('peInput').value;
             const cdValue = document.getElementById('caladoInput').value;
 
-            if (peValue) calcularCaladoDespacho();
-            if (cdValue) calcularMargen();
+            const activeTabContent = document.querySelector('.tab-content:not([style*="display:none"])');
+            const activeTabId = activeTabContent ? activeTabContent.id : null;
+            
+            if (activeTabId === 'tab-cd' && peValue) calcularCaladoDespacho();
+            if (activeTabId === 'tab-msbq' && cdValue) calcularMargen();
         }
 
         function mostrarPestana(tabId, clickedButton) {
@@ -190,83 +224,13 @@
             clickedButton.classList.add('active');
         }
 
-        // -----------------------------------------------------------------
-        // 1. CÁLCULO: Profundidad Efectiva (PE) a Calado de Despacho (CD)
-        // -----------------------------------------------------------------
-        function calcularCaladoDespacho() {
-            const pe = parseFloat(document.getElementById('peInput').value); 
-            if (isNaN(pe) || pe <= 0) {
-                document.getElementById('resultadoCD').textContent = "Ingrese una PE válida.";
-                return;
-            }
-
-            const r = RULES[currentTramo];
-            let caladoDespacho;
-
-            // Rango 1: PE <= 10.96 (MSBQ 0.60)
-            if (pe <= r.breakpoints.R1_PE_LIMIT) {
-                caladoDespacho = pe - 0.60;
-            } 
-            // Rango 3: MSBQ 10% de CD
-            else if (currentTramo === 'canales' && pe >= r.breakpoints.R2_PE_LIMIT) { 
-                caladoDespacho = pe / 1.10;
-            } 
-            else if (currentTramo === 'parana' && pe >= r.breakpoints.R2_PE_LIMIT) { 
-                caladoDespacho = pe / 1.10;
-            } 
-            
-            // Rango 2: Intermedio (MSBQ Incremental)
-            else {
-                // Fórmulas de Despeje Únicas
-                if (currentTramo === 'parana') {
-                    // Formula PARANÁ: CD = (PE + 30.48) / 4  (simplifica 3cm/cm)
-                    caladoDespacho = (pe + 30.48) / 4;
-                } else {
-                    // Formula CANALES: CD = (PE + 14.94) / 2.5 (simplifica 1.5cm/cm)
-                    caladoDespacho = (pe + 14.94) / 2.5;
-                }
-            }
-
-            if (caladoDespacho < 0) {
-                caladoDespacho = 0;
-            }
-            document.getElementById('resultadoCD').textContent = caladoDespacho.toFixed(2);
-        }
-
-        // -----------------------------------------------------------------
-        // 2. CÁLCULO: Calado Propio (CD) a Margen de Seguridad (MSBQ)
-        // -----------------------------------------------------------------
-        function calcularMargen() {
-            const calado = parseFloat(document.getElementById('caladoInput').value);
-            if (isNaN(calado) || calado <= 0) {
-                document.getElementById('resultadoMSBQ').textContent = "Ingrese un calado válido.";
-                return;
-            }
-
-            const r = RULES[currentTramo];
-            let msbq;
-            
-            // Rango 1: CD <= 10.36 -> MSBQ = 0.60
-            if (calado <= r.breakpoints.R2_CD_INCREMENT_START) {
-                msbq = 0.60;
-            } 
-            // Rango 3: CD >= Limite Superior -> MSBQ = 10% de CD
-            else if (calado >= r.breakpoints.R2_CD_LIMIT) {
-                msbq = calado * 0.10;
-            } 
-            // Rango 2: Incremental
-            else {
-                // MSBQ = 0.60 + Incremento * (CD - 10.36)
-                msbq = 0.60 + r.breakpoints.R2_CD_INCREMENT * (calado - r.breakpoints.R2_CD_INCREMENT_START);
-            }
-
-            document.getElementById('resultadoMSBQ').textContent = msbq.toFixed(3);
-        }
-
         // Inicializar la interfaz al cargar la página
         window.onload = function() {
-            mostrarPestana('tab-cd', document.querySelector('.tab-button'));
-            cambiarTramo(document.getElementById('tramoSelect').value); // Carga la regla inicial
+            // Inicializa las reglas del tramo y el color
+            cambiarTramo(document.getElementById('tramoSelect').value); 
+            // Muestra la primera pestaña como activa al cargar
+            document.getElementById('tab-cd').style.display = 'block';
+            document.getElementById('btn-cd').classList.add('active');
         };
     </script>
 
