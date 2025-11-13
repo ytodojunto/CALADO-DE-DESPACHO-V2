@@ -72,6 +72,17 @@
             padding-top: 10px; 
             color: #4CAF50;
         }
+        /* ESTILO RESALTADO VERDE PARA BOTONES DE CÁLCULO */
+        #calculate-cd, #calculate-msbq {
+            background-color: #00a000; /* Verde resaltado */
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: 900;
+            margin-top: 15px;
+        }
+        #calculate-cd:hover, #calculate-msbq:hover {
+            background-color: #007000;
+        }
     </style>
 </head>
 <body>
@@ -88,36 +99,38 @@
             <button class="tab-button active" onclick="mostrarPestana('tab-cd', this)">Cálculo de Calado (PE → CD)</button>
             <button class="tab-button" onclick="mostrarPestana('tab-msbq', this)">Cálculo de Margen (CD → MSBQ)</button>
         </div>
+        
         <div id="tab-cd" class="tab-content">
             <h3>⚓ Calado de Despacho (CD)</h3>
             
             <label for="peInput">Profundidad Efectiva (PE) en metros:</label>
             <input type="number" id="peInput" placeholder="Ej: 11.55" step="0.01">
 
-            <button onclick="calcularCaladoDespacho()">Calcular CD</button>
+            <button id="calculate-cd" onclick="calcularCaladoDespacho()">Calcular Calado de Despacho</button>
 
             <div class="resultado">
                 <p>Calado de Despacho Máximo:</p>
                 <span id="resultadoCD">---</span> metros
             </div>
         </div> 
+        
         <div id="tab-msbq" class="tab-content" style="display:none;">
             <h3>🚢 Margen de Seguridad (MSBQ)</h3>
 
             <label for="caladoInput">Calado Propio (CD) en metros:</label>
             <input type="number" id="caladoInput" placeholder="Ej: 10.40" step="0.01">
             
-            <button onclick="calcularMargen()">Calcular MSBQ</button>
+            <button id="calculate-msbq" onclick="calcularMargen()">Calcular Margen de Seguridad</button>
             
             <div class="resultado">
                 <p>Margen de Seguridad a Aplicar:</p>
                 <span id="resultadoMSBQ">---</span> metros
             </div>
         </div>
-        </div>
+    </div>
 
     <script>
-        // FUNCIÓN DE CONTROL DE PESTAÑAS
+        // FUNCIÓN DE CONTROL DE PESTAÑAS (Se mantiene igual)
         function mostrarPestana(tabId, clickedButton) {
             const contents = document.getElementsByClassName('tab-content');
             for (let i = 0; i < contents.length; i++) {
@@ -134,11 +147,11 @@
         }
 
         // -----------------------------------------------------------------
-        // 1. FUNCIÓN DE CÁLCULO: Profundidad Efectiva (PE) a Calado de Despacho (CD)
+        // 1. FUNCIÓN DE CÁLCULO: PE a CD (usando reglas del Paraná)
         // -----------------------------------------------------------------
         function calcularCaladoDespacho() {
-            const peInput = document.getElementById('peInput'); 
-            const pe = parseFloat(peInput.value); 
+            const peInput = document.getElementById('peInput'); 
+            const pe = parseFloat(peInput.value); 
             
             if (isNaN(pe) || pe <= 0) {
                 document.getElementById('resultadoCD').textContent = "Ingrese una PE válida.";
@@ -147,16 +160,16 @@
 
             let caladoDespacho;
 
-            // Rango 1: PE <= 10.96 (MSBQ 0.60)
-            if (pe <= 10.96) {
+            // Lógica del Tramo Paraná
+            const R1_PE_LIMIT = 10.96; // CD <= 10.36
+            const R3_PE_LIMIT = 11.55; // CD >= 10.50
+
+            if (pe <= R1_PE_LIMIT) {
                 caladoDespacho = pe - 0.60;
-            } 
-            // Rango 3: PE >= 11.55 (MSBQ 10% de CD)
-            else if (pe >= 11.55) { 
+            } else if (pe >= R3_PE_LIMIT) { 
                 caladoDespacho = pe / 1.10;
-            } 
-            // Rango 2: Intermedio (10.96 < PE < 11.55) - FÓRMULA PRÁCTICA SIMPLE
-            else {
+            } else {
+                // Rango Intermedio (Fórmula práctica: CD = (PE + 30.48) / 4)
                 caladoDespacho = (pe + 30.48) / 4;
             }
 
@@ -169,7 +182,7 @@
         }
 
         // -----------------------------------------------------------------
-        // 2. FUNCIÓN DE CÁLCULO: Calado Propio (CD) a Margen de Seguridad (MSBQ)
+        // 2. FUNCIÓN DE CÁLCULO: CD a MSBQ (usando reglas del Paraná)
         // -----------------------------------------------------------------
         function calcularMargen() {
             const calado = parseFloat(document.getElementById('caladoInput').value);
@@ -184,21 +197,21 @@
             // Rango 1: CD <= 10.36 -> MSBQ = 0.60
             if (calado <= 10.36) {
                 msbq = 0.60;
-            } 
+            } 
             // Rango 3: CD >= 10.50 -> MSBQ = 10% de CD
             else if (calado >= 10.50) {
                 msbq = calado * 0.10;
-            } 
+            } 
             // Rango 2: 10.37 a 10.49 -> MSBQ = 0.60 + 3 * (CD - 10.36)
             else {
                 msbq = 0.60 + 3 * (calado - 10.36);
             }
 
-            // El margen se muestra con 3 decimales para mayor precisión en la resta posterior (si se usa)
+            // Muestra el resultado redondeado a tres decimales (para máxima precisión)
             document.getElementById('resultadoMSBQ').textContent = msbq.toFixed(3);
         }
 
-        // Asegura que la primera pestaña esté visible al cargar
+        // Inicializar la interfaz al cargar la página
         window.onload = function() {
             mostrarPestana('tab-cd', document.querySelector('.tab-button.active'));
         };
