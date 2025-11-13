@@ -128,4 +128,111 @@
         // FUNCIÓN DE TRUNCAMIENTO A 2 DECIMALES
         // -----------------------------------------------------------------
         function truncateTwoDecimals(value) {
-            return Math.floor(value * 100)
+            return Math.floor(value * 100) / 100;
+        }
+
+        // -----------------------------------------------------------------
+        // CÁLCULO: Profundidad Efectiva (PE) a Calado de Despacho (CD)
+        // -----------------------------------------------------------------
+        function calcularCaladoDespacho() {
+            const pe = parseFloat(document.getElementById('peInput').value); 
+            if (isNaN(pe) || pe <= 0) {
+                document.getElementById('resultadoCD').textContent = "Ingrese una PE válida.";
+                return;
+            }
+
+            const r = RULES[currentTramo];
+            let caladoDespacho;
+
+            if (pe <= r.breakpoints.R1_PE_LIMIT) {
+                caladoDespacho = pe - 0.60;
+            } else if (pe >= r.breakpoints.R2_PE_LIMIT) { 
+                caladoDespacho = pe / 1.10;
+            } else {
+                if (currentTramo === 'parana') {
+                    caladoDespacho = (pe + 30.48) / 4;
+                } else {
+                    caladoDespacho = (pe + 14.94) / 2.5;
+                }
+            }
+
+            if (caladoDespacho < 0) {
+                caladoDespacho = 0;
+            }
+            
+            const finalResult = truncateTwoDecimals(caladoDespacho);
+            document.getElementById('resultadoCD').textContent = finalResult.toFixed(2);
+        }
+
+        // -----------------------------------------------------------------
+        // CÁLCULO: Calado Propio (CD) a Margen de Seguridad (MSBQ)
+        // -----------------------------------------------------------------
+        function calcularMargen() {
+            const calado = parseFloat(document.getElementById('caladoInput').value);
+            if (isNaN(calado) || calado <= 0) {
+                document.getElementById('resultadoMSBQ').textContent = "Ingrese un calado válido.";
+                return;
+            }
+
+            const r = RULES[currentTramo];
+            let msbq;
+            
+            if (calado <= r.breakpoints.R2_CD_INCREMENT_START) {
+                msbq = 0.60;
+            } else if (calado >= r.breakpoints.R2_CD_LIMIT) {
+                msbq = calado * 0.10;
+            } else {
+                msbq = 0.60 + r.breakpoints.R2_CD_INCREMENT * (calado - r.breakpoints.R2_CD_INCREMENT_START);
+            }
+
+            const finalResult = truncateTwoDecimals(msbq);
+            document.getElementById('resultadoMSBQ').textContent = finalResult.toFixed(2);
+        }
+
+        // -----------------------------------------------------------------
+        // FUNCIONES DE CONTROL DE INTERFAZ
+        // -----------------------------------------------------------------
+
+        function cambiarTramo(tramo) {
+            currentTramo = tramo;
+            const rules = RULES[tramo];
+            
+            document.getElementById('tramoActualDisplay').textContent = rules.name;
+            document.body.className = rules.class;
+
+            const peValue = document.getElementById('peInput').value;
+            const cdValue = document.getElementById('caladoInput').value;
+
+            const activeTabContent = document.querySelector('.tab-content:not([style*="display:none"])');
+            const activeTabId = activeTabContent ? activeTabContent.id : null;
+            
+            if (activeTabId === 'tab-cd' && peValue) calcularCaladoDespacho();
+            if (activeTabId === 'tab-msbq' && cdValue) calcularMargen();
+        }
+
+        function mostrarPestana(tabId, clickedButton) {
+            const contents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].style.display = 'none';
+            }
+            document.getElementById(tabId).style.display = 'block';
+
+            const buttons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            clickedButton.classList.add('active');
+        }
+
+        // Inicializar la interfaz al cargar la página
+        window.onload = function() {
+            // Inicializa las reglas del tramo y el color
+            cambiarTramo(document.getElementById('tramoSelect').value); 
+            // Muestra la primera pestaña como activa al cargar
+            document.getElementById('tab-cd').style.display = 'block';
+            document.getElementById('btn-cd').classList.add('active');
+        };
+    </script>
+
+</body>
+</html>
