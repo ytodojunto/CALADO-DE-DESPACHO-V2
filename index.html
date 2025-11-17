@@ -15,154 +15,159 @@
     </script>
 
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #333333; color: #ffffff; transition: background-color 0.5s ease; }
-        .container { max-width: 480px; margin: auto; padding: 25px; border: 1px solid #555; border-radius: 8px; background-color: #444444; }
-        body.scheme-canales { background-color: #1a364a; }
-        .scheme-canales .container { background-color: #2a4c61; }
-        .scheme-canales .tramo-info { border-left-color: #00e0ff; }
-        #appLogo { display: block; max-width: 100px; height: auto; margin: 0 auto 15px auto; }
-        .tramo-selector { margin-bottom: 20px; padding: 10px; border: 1px solid #555; border-radius: 4px; }
-        .tramo-info { background-color: #555555; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 5px solid #00bcd4; font-size: 0.9em; }
-        h2 { color: #ffffff; border-bottom: 2px solid #555; padding-bottom: 10px; margin-top: 0; text-align: center; }
-        .tab-button { background-color: #666; color: white; padding: 10px 15px; border: none; cursor: pointer; font-weight: bold; transition: background-color 0.3s; margin-right: 5px; }
-        .tab-button.active { background-color: #007bff; }
-        input, button { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; background-color: #666666; color: #ffffff; border: 1px solid #777; }
-        .resultado { font-size: 1.3em; font-weight: bold; margin-top: 20px; border-top: 2px solid #777; padding-top: 10px; color: #4CAF50; }
-        #calculate-cd, #calculate-msbq { background-color: #00a000; color: #ffffff; font-size: 1.1em; font-weight: 900; margin-top: 15px; }
-        #calculate-cd:hover, #calculate-msbq:hover { background-color: #007000; }
+        body {font-family: Arial, sans-serif; padding: 20px; background-color: #333; color: #fff; transition: background-color .5s;}
+        .container {max-width: 480px; margin: auto; padding: 25px; border: 1px solid #555; border-radius: 8px; background:#444;}
+        body.scheme-canales {background:#1a364a;}
+        .scheme-canales .container {background:#2a4c61;}
+        #appLogo {display:block; max-width:100px; margin:0 auto 15px;}
+        .tramo-info {background:#555; padding:10px; margin-bottom:15px; border-radius:4px; border-left:5px solid #00bcd4;}
+        h2 {text-align:center; border-bottom:2px solid #555; padding-bottom:10px;}
+        .tab-button {background:#666; color:#fff; padding:10px 15px; border:none; cursor:pointer; margin-right:5px;}
+        .tab-button.active {background:#007bff;}
+        input, button {width:100%; padding:10px; margin:10px 0; background:#666; color:#fff; border:1px solid #777;}
+        .resultado {font-size:1.4em; font-weight:bold; margin-top:20px; padding-top:10px; border-top:2px solid #777; color:#4caf50;}
+        #calculate-cd, #calculate-msbq {background:#008000; font-weight:900; font-size:1.1em;}
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="logo (2).png" alt="Logo de la Asociación" id="appLogo">
-        <h2>Calculadora Náutica</h2>
-        
-        <div class="tramo-selector">
-            <label for="tramoSelect">Seleccionar Tramo / Reglamentación:</label>
-            <select id="tramoSelect" onchange="cambiarTramo(this.value)">
-                <option value="parana">RÍO PARANÁ Y SUS BRAZOS</option>
-                <option value="canales">CANALES PUNTA INDIO, INTERMEDIO, etc.</option>
-            </select>
-        </div>
-        <div class="tramo-info">
-            Aplicando reglas para: <strong id="tramoActualDisplay">RÍO PARANÁ Y SUS BRAZOS</strong>
-        </div>
+<div class="container">
+    <img src="logo (2).png" alt="Logo" id="appLogo">
+    <h2>Calculadora Náutica</h2>
 
-        <div id="tab-menu" style="margin-bottom: 20px; text-align: center;">
-            <button class="tab-button" id="btn-cd" onclick="mostrarPestana('tab-cd', this)">Cálculo de Calado (PE → CD)</button>
-            <button class="tab-button" id="btn-msbq" onclick="mostrarPestana('tab-msbq', this)">Cálculo de Margen (CD → MSBQ)</button>
-        </div>
+    <div class="tramo-selector">
+        <label>Tramo / Reglamentación:</label>
+        <select id="tramoSelect" onchange="cambiarTramo(this.value)">
+            <option value="parana">RÍO PARANÁ Y SUS BRAZOS</option>
+            <option value="canales">CANALES (P. Indio, Intermedio, etc.)</option>
+        </select>
+    </div>
+    <div class="tramo-info">
+        Aplicando reglas para: <strong id="tramoActualDisplay">RÍO PARANÁ Y SUS BRAZOS</strong>
+    </div>
 
-        <div id="tab-cd" class="tab-content">
-            <h3>Calado de Despacho Máximo</h3>
-            <label for="peInput">Profundidad Efectiva (PE) en metros:</label>
-            <input type="number" id="peInput" placeholder="Ej: 11.55" step="0.01">
-            <button id="calculate-cd" onclick="calcularCaladoDespacho()">Calcular Calado de Despacho</button>
-            <div class="resultado">
-                <p>Calado Máximo de Despacho:</p>
-                <span id="resultadoCD">---</span> metros
-            </div>
-        </div> 
+    <div style="text-align:center; margin:20px 0;">
+        <button class="tab-button active" id="btn-cd" onclick="mostrar('tab-cd',this)">PE → Calado Máximo</button>
+        <button class="tab-button" id="btn-msbq" onclick="mostrar('tab-msbq',this)">Calado → Margen</button>
+    </div>
 
-        <div id="tab-msbq" class="tab-content" style="display:none;">
-            <h3>Margen de Seguridad Requerido</h3>
-            <label for="caladoInput">Calado Propio (CD) en metros:</label>
-            <input type="number" id="caladoInput" placeholder="Ej: 10.40" step="0.01">
-            <button id="calculate-msbq" onclick="calcularMargen()">Calcular Margen de Seguridad</button>
-            <div class="resultado">
-                <p>Margen de Seguridad a Aplicar:</p>
-                <span id="resultadoMSBQ">---</span> metros
-            </div>
+    <!-- Pestaña 1: Profundidad → Calado -->
+    <div id="tab-cd" class="tab-content">
+        <h3>Calado de Despacho Máximo</h3>
+        <label>Profundidad Efectiva (PE) en metros:</label>
+        <input type="number" id="peInput" step="0.01" placeholder="Ej: 11.04">
+        <button id="calculate-cd" onclick="calcCaladoDesdePE()">Calcular</button>
+        <div class="resultado">
+            Calado Máximo Permitido: <span id="resultadoCD">---</span> m
         </div>
     </div>
 
-    <script>
-        const RULES = {
-            parana: { name: "RÍO PARANÁ Y SUS BRAZOS", class: "scheme-parana",
-                breakpoints: { R1_PE_LIMIT: 10.96, R2_PE_LIMIT: 11.55, R2_CD_INCREMENT: 3, R2_CD_INCREMENT_START: 10.36, R2_CD_LIMIT: 10.50 }
-            },
-            canales: { name: "CANALES PUNTA INDIO, INTERMEDIO, etc.", class: "scheme-canales",
-                breakpoints: { R1_PE_LIMIT: 10.96, R2_PE_LIMIT: 11.748, R2_CD_INCREMENT: 1.5, R2_CD_INCREMENT_START: 10.36, R2_CD_LIMIT: 10.68 }
-            }
-        };
+    <!-- Pestaña 2: Calado → Margen -->
+    <div id="tab-msbq" class="tab-content" style="display:none;">
+        <h3>Margen de Seguridad Requerido</h3>
+        <label>Calado Propio (CD) en metros:</label>
+        <input type="number" id="caladoInput" step="0.01" placeholder="Ej: 10.38">
+        <button id="calculate-msbq" onclick="calcMargenDesdeCD()">Calcular</button>
+        <div class="resultado">
+            Margen de Seguridad: <span id="resultadoMSBQ">---</span> m
+        </div>
+    </div>
+</div>
 
-        let currentTramo = 'parana';
+<script>
+const RULES = {
+    parana: {
+        name: "RÍO PARANÁ Y SUS BRAZOS",
+        class: "scheme-parana",
+        cdStart: 10.36,
+        cd10porc: 10.50,
+        incrementoCm: 3        // 3 cm por cada cm de exceso
+    },
+    canales: {
+        name: "CANALES (P. Indio, Intermedio, etc.)",
+        class: "scheme-canales",
+        cdStart: 10.36,
+        cd10porc: 10.68,
+        incrementoCm: 1.5      // 1.5 cm por cada cm de exceso
+    }
+};
 
-        function calcularCaladoDespacho() {
-            const pe = parseFloat(document.getElementById('peInput').value); 
-            if (isNaN(pe) || pe <= 0) { document.getElementById('resultadoCD').textContent = "Ingrese una PE válida."; return; }
+let current = RULES.parana;
 
-            const r = RULES[currentTramo];
-            let caladoDespacho;
+// ==== PE → Calado máximo permitido ====
+function calcCaladoDesdePE() {
+    const pe = parseFloat(document.getElementById('peInput').value);
+    if (isNaN(pe) || pe <= 0) return alert("Ingrese PE válida");
 
-            if (pe <= r.breakpoints.R1_PE_LIMIT) caladoDespacho = pe - 0.60;
-            else if (pe >= r.breakpoints.R2_PE_LIMIT) caladoDespacho = pe / 1.10;
-            else {
-                caladoDespacho = currentTramo === 'parana' ? (pe + 30.48) / 4 : (pe + 14.94) / 2.5;
-            }
-
-            if (caladoDespacho < 0) caladoDespacho = 0;
-            const finalResult = Math.floor(caladoDespacho * 100) / 100;
-            document.getElementById('resultadoCD').textContent = finalResult.toFixed(2);
-
-            gtag('event', 'calcular_calado', { 'tramo': currentTramo, 'pe': pe, 'calado_resultado': finalResult.toFixed(2) });
+    let cd;
+    if (pe <= 10.96) {
+        cd = pe - 0.60;
+    } else if (current === RULES.parana && pe >= 11.55 || current === RULES.canales && pe >= 11.7748) {
+        cd = pe / 1.10;
+    } else {
+        // zona intermedia: fórmula lineal oficial
+        if (current === RULES.parana) {
+            cd = (pe + 30.48) / 4;
+        } else {
+            cd = (pe + 14.94) / 2.5;
         }
+    }
+    cd = Math.max(0, Math.floor(cd * 100) / 100);
+    document.getElementById('resultadoCD').textContent = cd.toFixed(2);
 
-        function calcularMargen() {
-            const calado = parseFloat(document.getElementById('caladoInput').value);
-            if (isNaN(calado) || calado <= 0) { document.getElementById('resultadoMSBQ').textContent = "Ingrese un calado válido."; return; }
+    gtag('event', 'calc_pe_a_cd', {tramo: current.name, pe: pe, cd: cd.toFixed(2)});
+}
 
-            const r = RULES[currentTramo];
-            let msbq;
+// ==== Calado → Margen de Seguridad (LA QUE FALLABA) ====
+function calcMargenDesdeCD() {
+    const cd = parseFloat(document.getElementById('caladoInput').value);
+    if (isNaN(cd) || cd <= 0) return alert("Ingrese calado válido");
 
-            if (calado <= r.breakpoints.R2_CD_INCREMENT_START) {
-                msbq = 0.60;
-            } 
-            else if (calado >= r.breakpoints.R2_CD_LIMIT) {
-                msbq = calado * 0.10;
-            } 
-            else {
-                // ZONA INTERMEDIA → redondeo hacia ARRIBA por cada centímetro o fracción
-                const excesoMetros = calado - r.breakpoints.R2_CD_INCREMENT_START;
-                const excesoCentesimas = excesoMetros * 100;
-                const incrementoCentesimas = Math.ceil(excesoCentesimas) * r.breakpoints.R2_CD_INCREMENT;
-                msbq = 0.60 + (incrementoCentesimas / 100);
-            }
+    let margen;
 
-            const finalResult = Math.ceil(msbq * 100) / 100;
-            document.getElementById('resultadoMSBQ').textContent = finalResult.toFixed(2);
+    if (cd <= current.cdStart) {
+        margen = 0.60;
+    }
+    else if (cd >= current.cd10porc) {
+        margen = cd * 0.10;
+    }
+    else {
+        // ZONA INTERMEDIA: 3 cm o 1.5 cm por cada cm (o fracción) de exceso → redondeo ARRIBA
+        const excesoCm = cd - current.cdStart;           // ej: 10.38 → 0.02 m
+        const cmExceso = Math.ceil(excesoCm * 100);      // 2 cm (redondea arriba)
+        const incremento = cmExceso * current.incrementoCm; // 2 × 3 = 6  o  2 × 1.5 = 3
+        margen = 0.60 + (incremento / 100);
+    }
 
-            gtag('event', 'calcular_margen', { 'tramo': currentTramo, 'calado': calado, 'margen_resultado': finalResult.toFixed(2) });
-        }
+    // Redondeo final siempre hacia arriba en zona intermedia
+    margen = (current === RULES.parana && cd > current.cdStart && cd < current.cd10porc) || 
+             (current === RULES.canales && cd > current.cdStart && cd < current.cd10porc) ?
+             Math.ceil(margen * 100) / 100 : Math.round(margen * 100) / 100;
 
-        function cambiarTramo(tramo) {
-            currentTramo = tramo;
-            const rules = RULES[tramo];
-            document.getElementById('tramoActualDisplay').textContent = rules.name;
-            document.body.className = rules.class;
-            gtag('event', 'cambiar_tramo', { 'tramo_seleccionado': rules.name });
+    document.getElementById('resultadoMSBQ').textContent = margen.toFixed(2);
 
-            const peValue = document.getElementById('peInput').value;
-            const cdValue = document.getElementById('caladoInput').value;
-            const activeTab = document.querySelector('.tab-content:not([style*="display:none"])');
-            if (activeTab && activeTab.id === 'tab-cd' && peValue) calcularCaladoDespacho();
-            if (activeTab && activeTab.id === 'tab-msbq' && cdValue) calcularMargen();
-        }
+    gtag('event', 'calc_cd_a_margen', {tramo: current.name, calado: cd, margen: margen.toFixed(2)});
+}
 
-        function mostrarPestana(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-            document.getElementById(tabId).style.display = 'block';
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            gtag('event', 'cambiar_pestana', { 'pestana': tabId });
-        }
+// Interfaz
+function cambiarTramo(v) {
+    current = RULES[v];
+    document.getElementById('tramoActualDisplay').textContent = current.name;
+    document.body.className = current.class;
+    gtag('event', 'cambiar_tramo', {tramo: current.name});
+}
+function mostrar(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(e=>e.style.display='none');
+    document.getElementById(id).style.display='block';
+    document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+}
 
-        window.onload = function() {
-            cambiarTramo('parana');
-            mostrarPestana('tab-cd', document.getElementById('btn-cd'));
-            gtag('event', 'pagina_vista', { 'pagina': 'Calculadora Náutica' });
-        };
-    </script>
+// Init
+window.onload = () => {
+    cambiarTramo('parana');
+    mostrar('tab-cd', document.getElementById('btn-cd'));
+};
+</script>
 </body>
 </html>
