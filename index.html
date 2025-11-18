@@ -3,107 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Náutica OFICIAL 2025 – 100 % Exacta</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VTGH8J2KN8"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VTGH8J2KN8');</script>
-    <style>
-        body{font-family:Arial,sans-serif;padding:20px;background:#333;color:#fff;margin:0;}
-        .container{max-width:480px;margin:20px auto;padding:25px;background:#444;border:1px solid #555;border-radius:8px;}
-        body.canales{background:#1a364a;}
-        .canales .container{background:#2a4c61;}
-        #appLogo{display:block;max-width:100px;margin:0 auto 20px;}
-        h2,h3{text-align:center;margin-bottom:20px;}
-        select,input,button{width:100%;padding:12px;margin:10px 0;border-radius:4px;border:none;font-size:1em;}
-        select,input{background:#666;color:#fff;}
-        button{background:#008000;color:#fff;font-weight:bold;cursor:pointer;}
-        .tab-button{background:#666;color:#fff;padding:10px 15px;border:none;margin:5px;border-radius:4px;cursor:pointer;}
-        .tab-button.active{background:#007bff;}
-        .resultado{font-size:1.9em;font-weight:bold;color:#4caf50;text-align:center;margin:30px 0;padding:15px;background:#333;border-radius:8px;}
-        table{width:100%;border-collapse:collapse;margin:15px 0;font-size:0.9em;}
-        th,td{border:1px solid #666;padding:8px;text-align:center;}
-        th{background:#555;}
-    </style>
-</head>
+    <title>Calculadora Náutica Oficial - 100% Exacta</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VTGH8J2KN8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VTGH8J2KN8');
+</script>
+
+<style>
+    body {font-family: Arial, sans-serif; padding:20px; background:#333; color:#fff; margin:0;}
+    .container {max-width:480px; margin:20px auto; padding:25px; background:#444; border:1px solid #555; border-radius:8px;}
+    body.canales {background:#1a364a;}
+    .canales .container {background:#2a4c61;}
+    #appLogo {display:block; max-width:100px; margin:0 auto 20px;}
+    h2 {text-align:center; margin-bottom:20px;}
+    select, input, button {width:100%; padding:12px; margin:10px 0; border-radius:4px; border:none; font-size:1em;}
+    select, input {background:#666; color:#fff;}
+    button {background:#008000; color:#fff; font-weight:bold;}
+    .tab-button {background:#666; color:#fff; padding:10px 15px; border:none; margin:5px; border-radius:4px;}
+    .tab-button.active {background:#007bff;}
+    .resultado {font-size:1.8em; font-weight:bold; color:#4caf50; text-align:center; margin:25px 0; padding:15px; background:#333; border-radius:8px;}
+    table {width:100%; border-collapse:collapse; margin:15px 0; font-size:0.9em;}
+    th, td {border:1px solid #666; padding:6px; text-align:center;}
+    th {background:#555;}
+</style></head>
 <body>
 
 <div class="container">
     <img src="logo (2).png" alt="Logo" id="appLogo">
-    <h2>Calculadora Náutica OFICIAL 2025</h2>
+    <h2>Calculadora Náutica Oficial</h2>
 
-    <select id="tramoSelect" onchange="cambiarTramo()">
-        <option value="parana">RÍO PARANÁ Y SUS BRAZOS</option>
-        <option value="canales">CANALES</option>
-    </select>
+<select id="tramoSelect" onchange="cambiarTramo()">
+    <option value="parana">RÍO PARANÁ Y SUS BRAZOS</option>
+    <option value="canales">CANALES (P. Indio, Intermedio, etc.)</option>
+</select>
 
-    <div style="text-align:center;margin:20px 0;">
-        <button class="tab-button active" onclick="mostrar('tab-cd')">PE → Calado</button>
-        <button class="tab-button" onclick="mostrar('tab-msbq')">Calado → Margen</button>
-    </div>
-
-    <div id="tab-cd" class="tab-content">
-        <label>Profundidad Efectiva (PE):</label>
-        <input type="number" step="0.01" id="peInput" placeholder="Ej: 12.73">
-        <button onclick="calcDesdePE()">Calcular Calado Máximo</button>
-        <div class="resultado" id="resultadoCD">—</div>
-    </div>
-
-    <div id="tab-msbq" class="tab-content" style="display:none;">
-        <label>Calado Propio (CD):</label>
-        <input type="number" step="0.01" id="caladoInput" placeholder="Ej: 11.58">
-        <button onclick="calcDesdeCalado()">Calcular Margen</button>
-        <div class="resultado" id="resultadoMSBQ">—</div>
-    </div>
+<div style="text-align:center; margin:20px 0;">
+    <button class="tab-button active" onclick="mostrar('tab-cd')">PE → Calado</button>
+    <button class="tab-button" onclick="mostrar('tab-msbq')">Calado → Margen</button>
+    <button class="tab-button" onclick="mostrar('tab-tabla')">Tablas Oficiales</button>
 </div>
 
+<!-- PE → Calado -->
+<div id="tab-cd" class="tab-content">
+    <label>Profundidad Efectiva (PE):</label>
+    <input type="number" step="0.01" id="peInput" placeholder="Ej: 11.04">
+    <button onclick="calcDesdePE()">Calcular Calado Máximo</button>
+    <div class="resultado" id="resultadoCD">—</div>
+</div>
+
+<!-- Calado → Margen -->
+<div id="tab-msbq" class="tab-content" style="display:none;">
+    <label>Calado Propio (CD):</label>
+    <input type="number" step="0.01" id="caladoInput" placeholder="Ej: 10.38">
+    <button onclick="calcDesdeCalado()">Calcular Margen</button>
+    <div class="resultado" id="resultadoMSBQ">—</div>
+</div>
+
+<!-- Tablas oficiales -->
+<div id="tab-tabla" class="tab-content" style="display:none;">
+    <h3 id="tablaTitulo">RÍO PARANÁ</h3>
+    <div id="tablaContenido"></div>
+</div></div>
+
 <script>
-// === FUNCIÓN CLAVE: redondea exactamente como la tabla oficial (hacia arriba cada 0.05) ===
-function margenOficial(cd) {
-    if (cd < 10.50) return null; // se usa tabla fija
-    return Math.ceil(cd * 20) / 20; // ¡¡ESTO ES LO QUE HACE LA MAGIA!!
-    // 10.55 → 10.55×20 = 211 → Math.ceil(211) = 211 → 211/20 = 10.55 → margen 1.06
-    // 10.54 → 10.54×20 = 210.8 → Math.ceil(210.8) = 211 → 211/20 = 10.55 → margen 1.06
-}
-
-// Cálculo margen → 100 % igual a tu tabla
-function obtenerMargen(cd) {
-    cd = parseFloat(cd);
-    if (isNaN(cd)) return null;
-
-    // Tabla fija hasta 10.49
-    const fila = TABLAS.parana.find(f => Math.abs(f.cd - cd) < 0.005);
-    if (fila) return fila.m;
-
-    // Desde 10.50 en adelante → regla oficial exacta
-    if (cd >= 10.50) {
-        const margen = margenOficial(cd);
-        return parseFloat((margen * 0.10).toFixed(2));
-    }
-
-    return 0.63; // por debajo de 10.37 (raro)
-}
-
-// Cálculo PE → Calado (inverso perfecto)
-function obtenerCaladoDesdePE(pe) {
-    pe = parseFloat(pe);
-    if (isNaN(pe)) return null;
-
-    // Busca en tabla fija
-    const fila = TABLAS.parana.find(f => Math.abs(f.pe - pe) < 0.015);
-    if (fila) return fila.cd;
-
-    // Desde PE > 11.48 → aplica la misma regla oficial
-    if (pe > 11.48) {
-        let cd = pe * 0.90;                    // 90 % de la PE
-        cd = Math.floor(cd * 20) / 20;         // redondea hacia abajo de a 0.05 m
-        // luego ajusta al siguiente valor válido según la tabla oficial
-        const margen = margenOficial(cd + 0.05);
-        return parseFloat((pe - margen * 0.10).toFixed(2));
-    }
-
-    return null;
-}
-
-// === TABLA FIJA RÍO PARANÁ (hasta 10.49) ===
+// === TABLAS OFICIALES 100% EXACTAS (las que vos mandaste) ===
 const TABLAS = {
     parana: [
         {cd:10.37,m:0.63,pe:11.00},{cd:10.38,m:0.66,pe:11.04},{cd:10.39,m:0.69,pe:11.08},
@@ -111,38 +79,85 @@ const TABLAS = {
         {cd:10.43,m:0.81,pe:11.24},{cd:10.44,m:0.84,pe:11.28},{cd:10.45,m:0.87,pe:11.32},
         {cd:10.46,m:0.90,pe:11.36},{cd:10.47,m:0.93,pe:11.40},{cd:10.48,m:0.96,pe:11.44},
         {cd:10.49,m:0.99,pe:11.48}
+    ],
+    canales: [
+        {cd:10.37,m:0.62,pe:10.98},{cd:10.38,m:0.63,pe:11.01},{cd:10.39,m:0.65,pe:11.04},
+        {cd:10.40,m:0.66,pe:11.06},{cd:10.41,m:0.68,pe:11.09},{cd:10.42,m:0.69,pe:11.11},
+        {cd:10.43,m:0.71,pe:11.13},{cd:10.44,m:0.72,pe:11.16},{cd:10.45,m:0.74,pe:11.18},
+        {cd:10.46,m:0.75,pe:11.21},{cd:10.47,m:0.77,pe:11.23},{cd:10.48,m:0.78,pe:11.26},
+        {cd:10.49,m:0.80,pe:11.29},{cd:10.50,m:0.81,pe:11.31},{cd:10.51,m:0.83,pe:11.34},
+        {cd:10.52,m:0.84,pe:11.36},{cd:10.53,m:0.86,pe:11.38},{cd:10.54,m:0.87,pe:11.41},
+        {cd:10.55,m:0.89,pe:11.44},{cd:10.56,m:0.90,pe:11.46},{cd:10.57,m:0.92,pe:11.49},
+        {cd:10.58,m:0.93,pe:11.51},{cd:10.59,m:0.95,pe:11.53},{cd:10.60,m:0.96,pe:11.56},
+        {cd:10.61,m:0.98,pe:11.58},{cd:10.62,m:0.99,pe:11.61},{cd:10.63,m:1.01,pe:11.63},
+        {cd:10.64,m:1.02,pe:11.66},{cd:10.65,m:1.04,pe:11.68},{cd:10.66,m:1.05,pe:11.71},
+        {cd:10.67,m:1.07,pe:11.73}
     ]
 };
 
 let tramo = 'parana';
 
+// === CÁLCULO EXACTO POR TABLA ===
+function obtenerMargen(cd) {
+    cd = parseFloat(cd.toFixed(2));
+    const fila = TABLAS[tramo].find(f => f.cd === cd);
+    if (fila) return fila.m;
+    if (cd <= 10.36) return 0.60;
+    if (tramo==='parana' && cd >= 10.50 || tramo==='canales' && cd >= 10.68) return parseFloat((cd * 0.10).toFixed(2));
+    return null; // fuera de rango
+}
+
+function obtenerCaladoDesdePE(pe) {
+    pe = parseFloat(pe.toFixed(2));
+    const fila = TABLAS[tramo].find(f => f.pe === pe);
+    if (fila) return fila.cd;
+    if (pe <= (tramo==='parana'?10.96:10.96)) return parseFloat((pe - 0.60).toFixed(2));
+    if (pe >= (tramo==='parana'?11.55:11.7748)) return parseFloat((pe / 1.10).toFixed(2));
+    return null;
+}
+
+// === FUNCIONES PRINCIPALES ===
 function calcDesdeCalado() {
     const cd = parseFloat(document.getElementById('caladoInput').value);
-    const m = obtenerMargen(cd);
-    document.getElementById('resultadoMSBQ').textContent = m !== null ? m.toFixed(2) + " m" : "Sin datos";
+    const margen = obtenerMargen(cd);
+    document.getElementById('resultadoMSBQ').textContent = margen !== null ? margen.toFixed(2) + " m" : "Fuera de tabla";
+    gtag('event', 'calc_calado_margen', {tramo, calado: cd, margen});
 }
 
 function calcDesdePE() {
     const pe = parseFloat(document.getElementById('peInput').value);
-    const cd = obtenerCaladoDesdePE(pe) || (pe / 1.10);
-    const cdFinal = Math.floor(cd * 20) / 20; // redondeo conservador a 0.05
-    document.getElementById('resultadoCD').textContent = cdFinal.toFixed(2) + " m";
+    const cd = obtenerCaladoDesdePE(pe);
+    document.getElementById('resultadoCD').textContent = cd !== null ? cd.toFixed(2) + " m" : "Fuera de tabla";
+    gtag('event', 'calc_pe_calado', {tramo, pe, calado: cd});
 }
 
+// === INTERFAZ ===
 function cambiarTramo() {
     tramo = document.getElementById('tramoSelect').value;
     document.body.className = tramo === 'canales' ? 'canales' : '';
+    mostrarTabla();
 }
 
-function mostrar(tab) {
+function mostrar( pestaña ) {
     document.querySelectorAll('.tab-content').forEach(d=>d.style.display='none');
-    document.getElementById(tab).style.display='block';
+    document.getElementById(pestaña).style.display = 'block';
     document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
     event.target.classList.add('active');
+    if (pestaña==='tab-tabla') mostrarTabla();
 }
 
+function mostrarTabla() {
+    document.getElementById('tablaTitulo').textContent = tramo==='parana' ? 'RÍO PARANÁ (10.37-10.49)' : 'CANALES (10.37-10.67)';
+    const html = '<table><tr><th>Calado</th><th>Margen</th><th>PE</th></tr>' +
+        TABLAS[tramo].map(f => `<tr><td>${f.cd}</td><td>${f.m}</td><td>${f.pe}</td></tr>`).join('') +
+        '</table>';
+    document.getElementById('tablaContenido').innerHTML = html;
+}
+
+// Init
 cambiarTramo();
 mostrar('tab-cd');
 </script>
 </body>
 </html>
+
