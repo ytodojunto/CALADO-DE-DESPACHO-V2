@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Náutica Oficial - 100% Exacta</title>
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VTGH8J2KN8"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -16,7 +17,7 @@
         .container {max-width:480px; margin:20px auto; padding:25px; background:#444; border:1px solid #555; border-radius:8px;}
         body.canales {background:#1a364a;}
         .canales .container {background:#2a4c61;}
-        /* #appLogo {display:block; max-width:100px; margin:0 auto 20px;} */ /* Esta línea ya no es necesaria si se elimina el logo */
+        #appLogo {display:block; max-width:100px; margin:0 auto 20px;} /* Mantenemos el estilo del logo si existe en tu entorno */
         h2 {text-align:center; margin-bottom:20px;}
         select, input, button {width:100%; padding:12px; margin:10px 0; border-radius:4px; border:none; font-size:1em;}
         select, input {background:#666; color:#fff;}
@@ -31,6 +32,7 @@
 </head>
 <body>
     <div class="container">
+        <img src="logo (2).png" alt="Logo" id="appLogo">
         <h2>Calculadora Náutica Oficial</h2>
 
         <select id="tramoSelect" onchange="cambiarTramo()">
@@ -39,10 +41,9 @@
         </select>
 
         <div style="text-align:center; margin:20px 0;">
-            <button class="tab-button active" onclick="mostrar('tab-cd')">PE → Calado</button>
-            <button class="tab-button" onclick="mostrar('tab-msbq')">Calado → Margen</button>
-            <button class="tab-button" onclick="mostrar('tab-tabla')">Tablas Oficiales</button>
-        </div>
+            <button class="tab-button active" onclick="mostrar('tab-cd', this)">PE → Calado</button>
+            <button class="tab-button" onclick="mostrar('tab-msbq', this)">Calado → Margen</button>
+            </div>
 
         <div id="tab-cd" class="tab-content">
             <label>Profundidad Efectiva (PE):</label>
@@ -137,7 +138,7 @@
         };
 
         let tramo = 'parana';
-        const MAX_CD_CANALES = 12.00; // Último calado tabulado
+        const MAX_CD_CANALES = 12.00; 
 
         // === CÁLCULO EXACTO POR TABLA ===
         function obtenerMargen(cd) {
@@ -152,7 +153,7 @@
             
             if (tramo==='canales' && cd > MAX_CD_CANALES) return parseFloat((cd * 0.10).toFixed(2));
 
-            return null; // fuera de rango
+            return null; 
         }
 
         /**
@@ -162,7 +163,7 @@
             pe = parseFloat(pe.toFixed(2));
             const fila = TABLAS[tramo].find(f => f.pe === pe);
 
-            if (fila) return fila.cd; // Paso 1: Valor exacto en la tabla
+            if (fila) return fila.cd; 
 
             // Lógica para 'parana'
             if (tramo === 'parana') {
@@ -195,7 +196,7 @@
                 }
             }
 
-            return null; // fuera de rango
+            return null; 
         }
 
         // === FUNCIONES PRINCIPALES ===
@@ -214,25 +215,28 @@
         }
 
         // === INTERFAZ ===
+        // Modificación de la función 'mostrar' para que ya no intente manejar 'tab-tabla'
         function cambiarTramo() {
             tramo = document.getElementById('tramoSelect').value;
             document.body.className = tramo === 'canales' ? 'canales' : '';
-            mostrarTabla();
+            // mostrarTabla(); // Ya no se llama al cambiar de tramo
         }
 
-        function mostrar( pestaña ) {
+        function mostrar(pestaña, clickedButton) {
+            if (pestaña === 'tab-tabla') return; // Evita que se muestre la pestaña de tablas
+
             document.querySelectorAll('.tab-content').forEach(d=>d.style.display='none');
             document.getElementById(pestaña).style.display = 'block';
+            
             document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
-            const targetButton = event.target.closest('.tab-button');
-            if (targetButton) {
-                targetButton.classList.add('active');
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             } else {
                 document.querySelector(`.tab-button[onclick*="mostrar('${pestaña}')"]`).classList.add('active');
             }
-            if (pestaña==='tab-tabla') mostrarTabla();
         }
 
+        // Ya no se necesita llamar a mostrarTabla(), pero la función se mantiene por si el HTML interno la usa.
         function mostrarTabla() {
             document.getElementById('tablaTitulo').textContent = tramo==='parana' 
                 ? 'RÍO PARANÁ (10.37-10.49)' 
@@ -243,7 +247,7 @@
 
         // Init
         cambiarTramo(); 
-        mostrar('tab-cd'); 
+        mostrar('tab-cd', document.querySelector('.tab-button.active')); 
     </script>
 </body>
 </html>
