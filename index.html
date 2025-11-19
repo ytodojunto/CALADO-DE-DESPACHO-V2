@@ -16,7 +16,7 @@
         .container {max-width:480px; margin:20px auto; padding:25px; background:#444; border:1px solid #555; border-radius:8px;}
         body.canales {background:#1a364a;}
         .canales .container {background:#2a4c61;}
-        #appLogo {display:block; max-width:100px; margin:0 auto 20px;}
+        /* #appLogo {display:block; max-width:100px; margin:0 auto 20px;} */ /* Esta línea ya no es necesaria si se elimina el logo */
         h2 {text-align:center; margin-bottom:20px;}
         select, input, button {width:100%; padding:12px; margin:10px 0; border-radius:4px; border:none; font-size:1em;}
         select, input {background:#666; color:#fff;}
@@ -31,7 +31,6 @@
 </head>
 <body>
     <div class="container">
-        <img src="logo (2).png" alt="Logo" id="appLogo">
         <h2>Calculadora Náutica Oficial</h2>
 
         <select id="tramoSelect" onchange="cambiarTramo()">
@@ -87,15 +86,13 @@
                 {cd:10.61,m:0.98,pe:11.58},{cd:10.62,m:0.99,pe:11.61},{cd:10.63,m:1.01,pe:11.63},
                 {cd:10.64,m:1.02,pe:11.66},{cd:10.65,m:1.04,pe:11.68},{cd:10.66,m:1.05,pe:11.71},
                 {cd:10.67,m:1.07,pe:11.73},
-                // *** FILAS CORREGIDAS INICIANDO EN 10.68 ***
                 {cd:10.68,m:1.07,pe:11.75},{cd:10.69,m:1.07,pe:11.76},{cd:10.70,m:1.08,pe:11.78},
                 {cd:10.71,m:1.08,pe:11.79},{cd:10.72,m:1.08,pe:11.80},{cd:10.73,m:1.08,pe:11.81},
-                {cd:10.74,m:1.08,pe:11.82}, // MARGEN 1.08 CORREGIDO
+                {cd:10.74,m:1.08,pe:11.82}, 
                 {cd:10.75,m:1.08,pe:11.83},
                 {cd:10.76,m:1.09,pe:11.85},
                 {cd:10.77,m:1.09,pe:11.86},{cd:10.78,m:1.09,pe:11.87},{cd:10.79,m:1.09,pe:11.88},
                 {cd:10.80,m:1.09,pe:11.89},{cd:10.81,m:1.09,pe:11.90},{cd:10.82,m:1.09,pe:11.91},
-                // *** CONTINÚA EL RESTO DE LA TABLA SIN CAMBIOS ***
                 {cd:10.83,m:1.10,pe:11.93},{cd:10.84,m:1.10,pe:11.94},{cd:10.85,m:1.10,pe:11.95},
                 {cd:10.86,m:1.10,pe:11.96},{cd:10.87,m:1.10,pe:11.97},{cd:10.88,m:1.10,pe:11.98},
                 {cd:10.89,m:1.10,pe:11.99},{cd:10.90,m:1.10,pe:12.00},{cd:10.91,m:1.11,pe:12.02},
