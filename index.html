@@ -24,7 +24,8 @@
         button {background:#008000; color:#fff; font-weight:bold;}
         .tab-button {background:#666; color:#fff; padding:10px 15px; border:none; margin:5px; border-radius:4px;}
         .tab-button.active {background:#007bff;}
-        .resultado {font-size:1.8em; font-weight:bold; color:#4caf50; text-align:center; margin:25px 0; padding:15px; background:#333; border-radius:8px;}
+        .resultado {font-size:1.8em; font-weight:bold; color:#4caf50; text-align:center; margin:25px 0 5px; padding:15px; background:#333; border-radius:8px;}
+        .sub-resultado {font-size:1.2em; font-weight:bold; color:#fff; text-align:center; margin-top:10px; padding:5px 0;}
         table {width:100%; border-collapse:collapse; margin:15px 0; font-size:0.9em;}
         th, td {border:1px solid #666; padding:6px; text-align:center;}
         th {background:#555;}
@@ -43,7 +44,7 @@
 
         <div style="text-align:center; margin:20px 0;">
             <button class="tab-button active" onclick="mostrar('tab-cd', this)">PE → Calado</button>
-            <button class="tab-button" onclick="mostrar('tab-msbq', this)">Calado → Margen</button>
+            <button class="tab-button" onclick="mostrar('tab-msbq', this)">Calado → Margen/Marea</button>
             
         </div>
 
@@ -55,10 +56,21 @@
         </div>
 
         <div id="tab-msbq" class="tab-content" style="display:none;">
-            <label>Calado Propio (CD):</label>
+            <label id="labelCalado">Calado Propio (CD):</label>
             <input type="number" step="0.01" id="caladoInput" placeholder="Ej: 10.38">
-            <button onclick="calcDesdeCalado()">Calcular Margen</button>
-            <div class="resultado" id="resultadoMSBQ">—</div>
+            
+            <div id="mareaInputs" style="display:none;">
+                <label>Profundidad al Cero ($P_0$):</label>
+                <input type="number" step="0.01" id="profundidadCeroInput" placeholder="Ej: 10.50 o -10.50">
+                <label>Calado Máximo ($CD_{máx}$):</label> <input type="number" step="0.01" id="caladoMaximoDeseadoInput" placeholder="Ej: 10.65">
+            </div>
+
+            <button id="calcButton" onclick="calcDesdeCalado()">Calcular Margen</button>
+            
+            <div id="resultadoMSBQ">
+                <div class="resultado" id="resultadoMargen">—</div>
+                <div class="sub-resultado" id="resultadoMarea" style="display:none;"></div>
+            </div>
         </div>
 
         <div id="tab-tabla" class="tab-content" style="display:none;">
@@ -114,56 +126,7 @@
                 {cd:11.68,m:1.17,pe:12.85},{cd:11.69,m:1.17,pe:12.86},{cd:11.70,m:1.17,pe:12.87},{cd:11.71,m:1.17,pe:12.88},
                 {cd:11.72,m:1.17,pe:12.89},{cd:11.73,m:1.17,pe:12.90},{cd:11.74,m:1.17,pe:12.91},{cd:11.75,m:1.17,pe:12.93},
                 {cd:11.76,m:1.18,pe:12.94},{cd:11.77,m:1.18,pe:12.95},{cd:11.78,m:1.18,pe:12.96},{cd:11.79,m:1.18,pe:12.97},
-                {cd:11.80,m:1.18,pe:12.98},{cd:11.81,m:1.18,pe:12.99},{cd:11.82,m:1.18,pe:13.00},{cd:11.83,m:1.18,pe:13.01},
-                {cd:11.84,m:1.18,pe:13.02},{cd:11.85,m:1.18,pe:13.04},{cd:11.86,m:1.19,pe:13.05},{cd:11.87,m:1.19,pe:13.06},
-                {cd:11.88,m:1.19,pe:13.07},{cd:11.89,m:1.19,pe:13.08},{cd:11.90,m:1.19,pe:13.09},{cd:11.91,m:1.19,pe:13.10},
-                {cd:11.92,m:1.19,pe:13.11},{cd:11.93,m:1.19,pe:13.12},{cd:11.94,m:1.19,pe:13.13},{cd:11.95,m:1.19,pe:13.15},
-                {cd:11.96,m:1.20,pe:13.16},{cd:11.97,m:1.20,pe:13.17},{cd:11.98,m:1.20,pe:13.18},{cd:11.99,m:1.20,pe:13.19},
-                {cd:12.00,m:1.20,pe:13.20}
-            ],
-            canales: [
-                // *** TABLA FINAL CANALES (Corregida M=1.07 hasta 10.74, M=1.19 hasta 11.95) ***
-                {cd:10.37,m:0.62,pe:10.98},{cd:10.38,m:0.63,pe:11.01},{cd:10.39,m:0.65,pe:11.04},{cd:10.40,m:0.66,pe:11.06},
-                {cd:10.41,m:0.68,pe:11.09},{cd:10.42,m:0.69,pe:11.11},{cd:10.43,m:0.71,pe:11.13},{cd:10.44,m:0.72,pe:11.16},
-                {cd:10.45,m:0.74,pe:11.18},{cd:10.46,m:0.75,pe:11.21},{cd:10.47,m:0.77,pe:11.23},{cd:10.48,m:0.78,pe:11.26},
-                {cd:10.49,m:0.80,pe:11.29},{cd:10.50,m:0.81,pe:11.31},{cd:10.51,m:0.83,pe:11.34},{cd:10.52,m:0.84,pe:11.36},
-                {cd:10.53,m:0.86,pe:11.38},{cd:10.54,m:0.87,pe:11.41},{cd:10.55,m:0.89,pe:11.44},{cd:10.56,m:0.90,pe:11.46},
-                {cd:10.57,m:0.92,pe:11.49},{cd:10.58,m:0.93,pe:11.51},{cd:10.59,m:0.95,pe:11.53},{cd:10.60,m:0.96,pe:11.56},
-                {cd:10.61,m:0.98,pe:11.58},{cd:10.62,m:0.99,pe:11.61},{cd:10.63,m:1.01,pe:11.63},{cd:10.64,m:1.02,pe:11.66},
-                {cd:10.65,m:1.04,pe:11.68},{cd:10.66,m:1.05,pe:11.71},{cd:10.67,m:1.07,pe:11.73},{cd:10.68,m:1.07,pe:11.75},
-               {cd:10.69,m:1.07,pe:11.76},
-                {cd:10.70,m:1.07,pe:11.77},{cd:10.71,m:1.07,pe:11.78},{cd:10.72,m:1.07,pe:11.79},
-                {cd:10.73,m:1.07,pe:11.80},{cd:10.74,m:1.07,pe:11.81},{cd:10.75,m:1.08,pe:11.83},
-                {cd:10.76,m:1.08,pe:11.84},{cd:10.77,m:1.08,pe:11.85},{cd:10.78,m:1.08,pe:11.86},
-                {cd:10.79,m:1.08,pe:11.87},{cd:10.80,m:1.08,pe:11.88},{cd:10.81,m:1.08,pe:11.89},
-                {cd:10.82,m:1.08,pe:11.90},{cd:10.83,m:1.08,pe:11.91},{cd:10.84,m:1.08,pe:11.92},
-                {cd:10.85,m:1.09,pe:11.94},{cd:10.86,m:1.09,pe:11.95},{cd:10.87,m:1.09,pe:11.96},
-                {cd:10.88,m:1.09,pe:11.97},{cd:10.89,m:1.09,pe:11.98},{cd:10.90,m:1.09,pe:11.99},
-                {cd:10.91,m:1.09,pe:12.00},{cd:10.92,m:1.09,pe:12.01},{cd:10.93,m:1.09,pe:12.02},
-                {cd:10.94,m:1.09,pe:12.03},{cd:10.95,m:1.10,pe:12.05},{cd:10.96,m:1.10,pe:12.06},
-                {cd:10.97,m:1.10,pe:12.07},{cd:10.98,m:1.10,pe:12.08},{cd:10.99,m:1.10,pe:12.09},
-                {cd:11.00,m:1.10,pe:12.10},{cd:11.01,m:1.10,pe:12.11},{cd:11.02,m:1.10,pe:12.12},
-                {cd:11.03,m:1.10,pe:12.13},{cd:11.04,m:1.10,pe:12.14},{cd:11.05,m:1.11,pe:12.16},
-                {cd:11.06,m:1.11,pe:12.17},{cd:11.07,m:1.11,pe:12.18},{cd:11.08,m:1.11,pe:12.19},
-                {cd:11.09,m:1.11,pe:12.20},{cd:11.10,m:1.11,pe:12.21},{cd:11.11,m:1.11,pe:12.22},
-                {cd:11.12,m:1.11,pe:12.23},{cd:11.13,m:1.11,pe:12.24},{cd:11.14,m:1.11,pe:12.25},{cd:11.15,m:1.11,pe:12.27},
-                {cd:11.16,m:1.12,pe:12.28},{cd:11.17,m:1.12,pe:12.29},{cd:11.18,m:1.12,pe:12.30},{cd:11.19,m:1.12,pe:12.31},
-                {cd:11.20,m:1.12,pe:12.32},{cd:11.21,m:1.12,pe:12.33},{cd:11.22,m:1.12,pe:12.34},{cd:11.23,m:1.12,pe:12.35},
-                {cd:11.24,m:1.12,pe:12.36},{cd:11.25,m:1.12,pe:12.38},{cd:11.26,m:1.13,pe:12.39},{cd:11.27,m:1.13,pe:12.40},
-                {cd:11.28,m:1.13,pe:12.41},{cd:11.29,m:1.13,pe:12.42},{cd:11.30,m:1.13,pe:12.43},{cd:11.31,m:1.13,pe:12.44},
-                {cd:11.32,m:1.13,pe:12.45},{cd:11.33,m:1.13,pe:12.46},{cd:11.34,m:1.13,pe:12.47},{cd:11.35,m:1.13,pe:12.48},
-                {cd:11.36,m:1.14,pe:12.50},{cd:11.37,m:1.14,pe:12.51},{cd:11.38,m:1.14,pe:12.52},{cd:11.39,m:1.14,pe:12.53},
-                {cd:11.40,m:1.14,pe:12.54},{cd:11.41,m:1.14,pe:12.55},{cd:11.42,m:1.14,pe:12.56},{cd:11.43,m:1.14,pe:12.57},
-                {cd:11.44,m:1.14,pe:11.58},{cd:11.45,m:1.14,pe:12.60},{cd:11.46,m:1.15,pe:12.61},{cd:11.47,m:1.15,pe:12.62},
-                {cd:11.48,m:1.15,pe:12.63},{cd:11.49,m:1.15,pe:12.64},{cd:11.50,m:1.15,pe:12.65},{cd:11.51,m:1.15,pe:12.66},
-                {cd:11.52,m:1.15,pe:12.67},{cd:11.53,m:1.15,pe:12.68},{cd:11.54,m:1.15,pe:12.69},{cd:11.55,m:1.15,pe:12.71},
-                {cd:11.56,m:1.16,pe:12.72},{cd:11.57,m:1.16,pe:12.73},{cd:11.58,m:1.16,pe:12.74},{cd:11.59,m:1.16,pe:12.75},
-                {cd:11.60,m:1.16,pe:12.76},{cd:11.61,m:1.16,pe:12.77},{cd:11.62,m:1.16,pe:12.78},{cd:11.63,m:1.16,pe:12.79},
-                {cd:11.64,m:1.16,pe:12.80},{cd:11.65,m:1.16,pe:12.82},{cd:11.66,m:1.17,pe:12.83},{cd:11.67,m:1.17,pe:12.84},
-                {cd:11.68,m:1.17,pe:12.85},{cd:11.69,m:1.17,pe:12.86},{cd:11.70,m:1.17,pe:12.87},{cd:11.71,m:1.17,pe:12.88},
-                {cd:11.72,m:1.17,pe:12.89},{cd:11.73,m:1.17,pe:12.90},{cd:11.74,m:1.17,pe:12.91},{cd:11.75,m:1.17,pe:12.93},
-                {cd:11.76,m:1.18,pe:12.94},{cd:11.77,m:1.18,pe:12.95},{cd:11.78,m:1.18,pe:12.96},{cd:11.79,m:1.18,pe:12.97},
-                {cd:11.80,m:1.18,pe:12.98},{cd:11.81,m:1.18,pe:12.99},{cd:11.82,m:1.18,pe:13.00},{cd:11.83,m:1.18,pe:13.01},
+                {cd:11.80,m:1.18,pe:12.98},{cd:11.81,m:1.18,pe:13.00},{cd:11.82,m:1.18,pe:13.00},{cd:11.83,m:1.18,pe:13.01},
                 {cd:11.84,m:1.18,pe:13.02},{cd:11.85,m:1.18,pe:13.04},{cd:11.86,m:1.19,pe:13.05},{cd:11.87,m:1.19,pe:13.06},
                 {cd:11.88,m:1.19,pe:13.07},{cd:11.89,m:1.19,pe:13.08},{cd:11.90,m:1.19,pe:13.09},{cd:11.91,m:1.19,pe:13.10},
                 {cd:11.92,m:1.19,pe:13.11},{cd:11.93,m:1.19,pe:13.12},{cd:11.94,m:1.19,pe:13.13},{cd:11.95,m:1.19,pe:13.15},
@@ -176,7 +139,7 @@
         const MAX_CD_PARANA = 12.00;
         const MAX_CD_CANALES = 12.00; 
 
-        // === CÁLCULO EXACTO POR TABLA ===
+        // === CÁLCULO EXACTO POR TABLA (Margen de Seguridad M) ===
         function obtenerMargen(cd) {
             cd = parseFloat(cd.toFixed(2));
             const fila = TABLAS[tramo].find(f => f.cd === cd);
@@ -185,30 +148,27 @@
             
             if (cd <= 10.36) return 0.60;
             
-            if (tramo==='parana' && cd > MAX_CD_PARANA) return parseFloat((cd * 0.10).toFixed(2));
-            if (tramo==='canales' && cd > MAX_CD_CANALES) return parseFloat((cd * 0.10).toFixed(2));
+            // Extrapolación simple si está por encima del máximo de la tabla
+            if (tramo === 'parana' && cd > MAX_CD_PARANA) return parseFloat((cd * 0.10).toFixed(2));
+            if (tramo === 'canales' && cd > MAX_CD_CANALES) return parseFloat((cd * 0.10).toFixed(2));
 
             return null; 
         }
 
-        /**
-         * Calcula el calado máximo (CD) dada la profundidad efectiva (PE).
-         */
+        // === CÁLCULO INVERSO (Calado Máximo CD) ===
         function obtenerCaladoDesdePE(pe) {
             pe = parseFloat(pe.toFixed(2));
             const fila = TABLAS[tramo].find(f => f.pe === pe);
 
             if (fila) return fila.cd; 
             
-            // --- CÁLCULO DE INTERPOLACIÓN INVERSA Y EXTRAPOLACIÓN ---
-            
             // Manejo de valores muy bajos (PE <= 10.96)
             if (pe <= 10.96) return parseFloat((pe - 0.60).toFixed(2));
 
             // Si el valor está fuera de tabla por encima (Extrapolación)
             const MAX_PE = tramo === 'parana' ? 
-                           TABLAS.parana[TABLAS.parana.length - 1].pe :
-                           TABLAS.canales[TABLAS.canales.length - 1].pe;
+                            TABLAS.parana[TABLAS.parana.length - 1].pe :
+                            TABLAS.canales[TABLAS.canales.length - 1].pe;
 
             if (pe > MAX_PE) {
                 return parseFloat((pe / 1.10).toFixed(2));
@@ -227,14 +187,52 @@
         }
 
         // === FUNCIONES PRINCIPALES ===
+
+        // Cálculo de Margen para Río Paraná (CD -> M)
         function calcDesdeCalado() {
             const cd = parseFloat(document.getElementById('caladoInput').value);
             const margen = obtenerMargen(cd);
-            document.getElementById('resultadoMSBQ').textContent = margen !== null ? margen.toFixed(2) + " m" : "Fuera de tabla";
+            
+            document.getElementById('resultadoMargen').textContent = margen !== null ? margen.toFixed(2) + " m (Margen)" : "Fuera de tabla";
+            document.getElementById('resultadoMarea').textContent = ''; 
+            
             gtag('event', 'calc_calado_margen', {tramo, calado: cd, margen});
         }
+        
+        // CÁLCULO DE MAREA para Canales (P0, CD_max -> M, Marea)
+        function calcMarea() {
+            const p0Str = document.getElementById('profundidadCeroInput').value;
+            const cdMaxStr = document.getElementById('caladoMaximoDeseadoInput').value;
+            
+            if (!p0Str || !cdMaxStr) {
+                document.getElementById('resultadoMargen').textContent = "Ingresar ambos valores";
+                document.getElementById('resultadoMarea').textContent = '';
+                return;
+            }
 
-        // --- Resto de las funciones... ---
+            // 1. Manejar el valor absoluto de la Profundidad al Cero (P0)
+            const p0 = Math.abs(parseFloat(p0Str));
+            const cdMax = parseFloat(cdMaxStr);
+            
+            // 2. Obtener el Margen de Seguridad (M) para el Calado Máximo Deseado
+            const margen = obtenerMargen(cdMax);
+            
+            if (margen === null) {
+                document.getElementById('resultadoMargen').textContent = "Calado fuera de tabla";
+                document.getElementById('resultadoMarea').textContent = '';
+                return;
+            }
+            
+            // 3. Calcular la Altura de Marea Necesaria (A_Marea = (CD_max + M) - P0)
+            const marea = (cdMax + margen) - p0;
+
+            // 4. Mostrar Resultados
+            document.getElementById('resultadoMargen').textContent = margen.toFixed(2) + " m (Margen de Seguridad)";
+            document.getElementById('resultadoMarea').textContent = "Marea Necesaria: " + marea.toFixed(2) + " m";
+            gtag('event', 'calc_marea_canales', {tramo, p0, cdMax, margen, marea});
+        }
+
+        // Cálculo inverso (PE -> CD)
         function calcDesdePE() {
             const pe = parseFloat(document.getElementById('peInput').value);
             const cd = obtenerCaladoDesdePE(pe);
@@ -242,10 +240,28 @@
             gtag('event', 'calc_pe_calado', {tramo, pe, calado: cd});
         }
 
-        // === INTERFAZ ===
+        // === INTERFAZ Y LÓGICA DE TRAMO ===
         function cambiarTramo() {
             tramo = document.getElementById('tramoSelect').value;
             document.body.className = tramo === 'canales' ? 'canales' : '';
+            
+            const isCanales = tramo === 'canales';
+            
+            // Actualizar inputs y función en el tab 'tab-msbq'
+            document.getElementById('labelCalado').style.display = isCanales ? 'none' : 'block';
+            document.getElementById('caladoInput').style.display = isCanales ? 'none' : 'block';
+            document.getElementById('mareaInputs').style.display = isCanales ? 'block' : 'none';
+            
+            document.getElementById('calcButton').textContent = isCanales ? "Calcular Margen y Marea" : "Calcular Margen";
+            document.getElementById('calcButton').onclick = isCanales ? calcMarea : calcDesdeCalado;
+
+            // Mostrar/Ocultar el resultado de marea
+            document.getElementById('resultadoMarea').style.display = isCanales ? 'block' : 'none';
+
+            // Limpiar resultados al cambiar de tramo
+            document.getElementById('resultadoMargen').textContent = '—';
+            document.getElementById('resultadoMarea').textContent = '';
+            document.getElementById('resultadoCD').textContent = '—';
         }
 
         function mostrar(pestaña, clickedButton) {
@@ -256,8 +272,10 @@
             if (clickedButton) {
                 clickedButton.classList.add('active');
             } else {
-                document.querySelector(`.tab-button[onclick*="mostrar('${pestaña}')"]`).classList.add('active');
+                const button = document.querySelector(`.tab-button[onclick*="mostrar('${pestaña}'"]`);
+                if(button) button.classList.add('active');
             }
+            cambiarTramo();
         }
 
         // Init
