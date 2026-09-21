@@ -29,6 +29,11 @@
         .modo-btn.active {background:#007bff; border-color:#fff;}
         .modo-desc {text-align:center; color:#bbb; font-size:0.85em; margin:-10px 0 20px;}
 
+        /* Accesos directos a fuentes oficiales externas */
+        .accesos-directos {display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
+        .acceso-btn {flex:1 1 auto; min-width:120px; text-align:center; padding:10px 8px; background:#333; color:#4caf50; border:1px solid #555; border-radius:6px; font-size:0.8em; font-weight:bold; text-decoration:none;}
+        .acceso-btn:hover {background:#3a3a3a; text-decoration:underline;}
+
         .resultado {font-size:1.8em; font-weight:bold; color:#4caf50; text-align:center; margin:20px 0 5px; padding:15px; background:#333; border-radius:8px;}
         .sub-resultado {font-size:1.2em; font-weight:bold; color:#fff; text-align:center; margin-top:10px; padding:5px 0;}
         table {width:100%; border-collapse:collapse; margin:15px 0; font-size:0.9em;}
@@ -42,16 +47,6 @@
         .fuente-oficial a:last-child {border-bottom:none;}
         .fuente-oficial a:hover {text-decoration:underline;}
 
-        /* Marea Río de la Plata (SHN) */
-        #mareaSelect {margin-bottom:15px;}
-        .marea-actual {font-size:2em; font-weight:bold; color:#4caf50; text-align:center; margin:10px 0;}
-        .marea-actual span {font-size:0.4em; color:#ccc; font-weight:normal; display:block;}
-        .marea-hora {text-align:center; color:#aaa; font-size:0.85em; margin-bottom:15px;}
-        .pronostico-box {background:#333; border-radius:8px; padding:10px 15px; margin:15px 0;}
-        .pronostico-box h4 {margin:0 0 8px; font-size:0.95em; color:#4caf50;}
-        .pronostico-fila {display:flex; justify-content:space-between; padding:3px 0; font-size:0.9em; border-bottom:1px solid #555;}
-        .pronostico-fila:last-child {border-bottom:none;}
-        .marea-loading, .marea-error {text-align:center; color:#aaa; padding:15px 0;}
         .seccion-titulo {font-size:1.1em; font-weight:bold; margin:25px 0 5px; color:#fff; border-top:1px solid #555; padding-top:20px;}
     </style>
 </head>
@@ -66,6 +61,12 @@
         </div>
         <div class="modo-desc" id="modoDesc">Profundidad Efectiva → Calado máximo</div>
 
+        <div class="accesos-directos">
+            <a href="https://snih.hidricosargentina.gob.ar/Inicio.aspx" target="_blank" rel="noopener" class="acceso-btn">Profundidades Mínimas (SNIH)</a>
+            <a href="https://www.hidro.gov.ar/oceanografia/alturashorarias.asp" target="_blank" rel="noopener" class="acceso-btn">Alturas Horarias (SHN)</a>
+            <a href="https://www.hidro.gov.ar/oceanografia/pronostico.asp" target="_blank" rel="noopener" class="acceso-btn">Pronóstico Mareológico (SHN)</a>
+        </div>
+
         <!-- ===================== MODO PARANÁ ===================== -->
         <div id="modo-parana">
             <div class="seccion-titulo" style="margin-top:0; border-top:none; padding-top:0;">Paso 1 — Calado de despacho</div>
@@ -78,15 +79,6 @@
                 <h4>Fuente oficial (ANPyN)</h4>
                 <a href="https://www.argentina.gob.ar/economia/agencia-nacional-de-puertos-y-navegacion/planillas-de-determinantes" target="_blank" rel="noopener">Planillas de determinantes (Santa Fe–Océano, Santa Fe–Esquina, Esquina–Confluencia)</a>
             </div>
-
-            <div class="seccion-titulo">Paso 2 — Margen de seguridad y marea necesaria</div>
-            <label>Calado de Despacho:</label>
-            <input type="number" step="0.01" id="paranaCaladoStep2Input" placeholder="Se completa con el Paso 1, o cargalo manual">
-            <label>Profundidad al Cero (relevamiento del día):</label>
-            <input type="number" step="0.01" id="paranaP0Input" placeholder="Ingrese Profundidad al Cero">
-            <button onclick="calcularMargenMarea('paranaCaladoStep2Input','paranaP0Input','paranaResultadoMarea','paranaResultadoMargen')">Calcular Margen y Marea</button>
-            <div class="resultado" id="paranaResultadoMarea">—</div>
-            <div class="sub-resultado" id="paranaResultadoMargen"></div>
         </div>
 
         <!-- ===================== MODO RÍO DE LA PLATA (CANALES) ===================== -->
@@ -99,25 +91,6 @@
 
             <div class="resultado" id="resultadoMarea">—</div>
             <div class="sub-resultado" id="resultadoMargen"></div>
-
-            <div class="seccion-titulo">Marea Río de la Plata (SHN)</div>
-            <label>Mareógrafo:</label>
-            <select id="mareaSelect" onchange="renderMareaTab()">
-                <option value="San Clemente">San Clemente</option>
-                <option value="Oyarvide">Oyarvide</option>
-                <option value="Atalaya">Atalaya</option>
-                <option value="La Plata">La Plata</option>
-                <option value="Pilote Norden">Pilote Norden</option>
-                <option value="Buenos Aires">Buenos Aires</option>
-                <option value="San Fernando">San Fernando</option>
-                <option value="Martín García">Martín García</option>
-            </select>
-
-            <div class="modo-selector" style="margin-bottom:10px;">
-                <div class="modo-btn active" id="btnTabAlturas" onclick="setMareaTab('alturas')">Alturas Horarias</div>
-                <div class="modo-btn" id="btnTabPronostico" onclick="setMareaTab('pronostico')">Pronóstico Oficial</div>
-            </div>
-            <div id="mareaContenido"><div class="marea-loading">Cargando datos del SHN…</div></div>
         </div>
     </div>
 
@@ -226,184 +199,7 @@ const TABLAS = {
                 {cd:11.96,m:1.20,pe:13.16},{cd:11.97,m:1.20,pe:13.17},{cd:11.98,m:1.20,pe:13.18},{cd:11.99,m:1.20,pe:13.19},
                 {cd:12.00,m:1.20,pe:13.20}
             ]
-        };// === MAREA RÍO DE LA PLATA (SHN: alturas horarias + pronóstico) ===
-        const URL_ALTURAS = "https://raw.githubusercontent.com/ytodojunto/SHN_captura_pronosticos/main/data/alturas_historico.jsonl";
-        const URL_PRONOSTICO = "https://raw.githubusercontent.com/ytodojunto/SHN_captura_pronosticos/main/data/historico.jsonl";
-
-        // Mareógrafos de "alturas horarias" (observado) que tienen equivalente
-        // en el pronóstico oficial de bajamar/pleamar (lugares distintos, se mapean acá)
-        const MAPEO_PRONOSTICO = {
-            "Oyarvide": "CANAL PUNTA INDIO (Oyarvide - Km 133)",
-            "La Plata": "PUERTO LA PLATA",
-            "Buenos Aires": "PUERTO DE BUENOS AIRES (Muelle de Pescadores)",
-            "San Fernando": "SAN FERNANDO"
         };
-
-        let mareaDatosCargados = false;
-        let ALTURAS_POR_ESTACION = {};   // { estacion: [{timestamp, valor}, ...] } ordenado por fecha asc
-        let ULTIMO_PRONOSTICO = null;    // último registro de historico.jsonl
-        let ALTURAS_DISPONIBLES = false;
-        let PRONOSTICO_DISPONIBLE = false;
-        let ES_ARCHIVO_LOCAL = false;
-
-        function parsearJSONL(texto) {
-            return texto.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
-                try { return JSON.parse(l); } catch(e) { return null; }
-            }).filter(Boolean);
-        }
-
-        async function cargarDatosMarea() {
-            if (mareaDatosCargados) return;
-
-            if (location.protocol === 'file:') {
-                ES_ARCHIVO_LOCAL = true;
-                mareaDatosCargados = true;
-                return;
-            }
-
-            // Se piden por separado (allSettled): si una fuente falla, la otra igual se muestra
-            const [resAlturas, resPronostico] = await Promise.allSettled([
-                fetch(URL_ALTURAS).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }),
-                fetch(URL_PRONOSTICO).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-            ]);
-
-            if (resAlturas.status === 'fulfilled') {
-                const alturas = parsearJSONL(resAlturas.value);
-                ALTURAS_POR_ESTACION = {};
-                alturas.forEach(registro => {
-                    const ts = registro.timestamp;
-                    Object.entries(registro.alturas || {}).forEach(([estacion, valor]) => {
-                        if (!ALTURAS_POR_ESTACION[estacion]) ALTURAS_POR_ESTACION[estacion] = [];
-                        ALTURAS_POR_ESTACION[estacion].push({ timestamp: ts, valor });
-                    });
-                });
-                Object.values(ALTURAS_POR_ESTACION).forEach(arr =>
-                    arr.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-                );
-                ALTURAS_DISPONIBLES = true;
-            } else {
-                ALTURAS_DISPONIBLES = false;
-                console.error('Error cargando alturas horarias:', resAlturas.reason);
-            }
-
-            if (resPronostico.status === 'fulfilled') {
-                const pronosticos = parsearJSONL(resPronostico.value);
-                ULTIMO_PRONOSTICO = pronosticos.length ? pronosticos[pronosticos.length - 1] : null;
-                PRONOSTICO_DISPONIBLE = !!ULTIMO_PRONOSTICO;
-            } else {
-                PRONOSTICO_DISPONIBLE = false;
-                console.error('Error cargando pronóstico:', resPronostico.reason);
-            }
-
-            mareaDatosCargados = true;
-        }
-
-        function formatearHora(timestampISO) {
-            if (!timestampISO) return '—';
-            const d = new Date(timestampISO);
-            return d.toLocaleString('es-AR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-        }
-
-        // Mini gráfico de tendencia (SVG en línea, sin librerías)
-        function sparkline(serie) {
-            if (serie.length < 2) return '';
-            const w = 400, h = 60, pad = 4;
-            const valores = serie.map(p => p.valor);
-            const min = Math.min(...valores), max = Math.max(...valores);
-            const rango = (max - min) || 1;
-            const puntos = serie.map((p, i) => {
-                const x = pad + (i / (serie.length - 1)) * (w - pad * 2);
-                const y = h - pad - ((p.valor - min) / rango) * (h - pad * 2);
-                return x.toFixed(1) + ',' + y.toFixed(1);
-            }).join(' ');
-            return '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:60px;margin:10px 0;">' +
-                   '<polyline points="' + puntos + '" fill="none" stroke="#4caf50" stroke-width="2"/></svg>';
-        }
-
-        let mareaTabActual = 'alturas';
-
-        function setMareaTab(tab) {
-            mareaTabActual = tab;
-            document.getElementById('btnTabAlturas').classList.toggle('active', tab === 'alturas');
-            document.getElementById('btnTabPronostico').classList.toggle('active', tab === 'pronostico');
-            renderMareaTab();
-        }
-
-        function renderMareaTab() {
-            const cont = document.getElementById('mareaContenido');
-            const estacion = document.getElementById('mareaSelect').value;
-
-            if (ES_ARCHIVO_LOCAL) {
-                cont.innerHTML = '<div class="marea-error">Estás abriendo este archivo localmente. Los datos del SHN solo cargan cuando la calculadora está publicada en GitHub Pages (https://).</div>';
-                return;
-            }
-
-            if (!ALTURAS_DISPONIBLES && !PRONOSTICO_DISPONIBLE) {
-                cont.innerHTML = '<div class="marea-error">No se pudo cargar el dato del SHN (fuente sin datos aún o sin conexión). Probá de nuevo en unos minutos.</div>';
-                return;
-            }
-
-            cont.innerHTML = mareaTabActual === 'alturas' ? htmlAlturas(estacion) : htmlPronostico(estacion);
-        }
-
-        // Pestaña "Alturas Horarias": lo que muestra hidro.gov.ar en tiempo real
-        function htmlAlturas(estacion) {
-            const serie = ALTURAS_POR_ESTACION[estacion];
-            if (!serie || !serie.length) {
-                return '<div class="marea-error">' +
-                    (ALTURAS_DISPONIBLES ? 'Sin datos observados para ' + estacion + '.' : 'Altura observada no disponible por ahora.') +
-                    '</div>';
-            }
-
-            const actual = serie[serie.length - 1];
-            const historial = serie.slice(-48).reverse();
-
-            let html = '<div class="marea-actual">' + actual.valor.toFixed(2) + ' m<span>' + estacion + '</span></div>';
-            html += '<div class="marea-hora">Actualizado: ' + formatearHora(actual.timestamp) + '</div>';
-            html += sparkline(serie.slice(-48));
-            html += '<details><summary style="cursor:pointer;color:#aaa;padding:8px 0;">Ver historial (últimas ' + historial.length + ' lecturas)</summary>';
-            html += '<table><tr><th>Hora</th><th>Altura (m)</th></tr>';
-            historial.forEach(p => {
-                html += '<tr><td>' + formatearHora(p.timestamp) + '</td><td>' + p.valor.toFixed(2) + '</td></tr>';
-            });
-            html += '</table></details>';
-            return html;
-        }
-
-        // Pestaña "Pronóstico Oficial": último pronóstico SHN de bajamar/pleamar
-        function htmlPronostico(estacion) {
-            if (!PRONOSTICO_DISPONIBLE) {
-                return '<div class="pronostico-box"><h4>Pronóstico oficial SHN</h4><div class="pronostico-fila"><span>No disponible por ahora</span></div></div>';
-            }
-
-            const lugarPronostico = MAPEO_PRONOSTICO[estacion];
-            let html = '<div class="pronostico-box"><h4>Pronóstico oficial SHN (' + ULTIMO_PRONOSTICO.fecha_pronostico + ')</h4>';
-            if (lugarPronostico) {
-                const eventos = (ULTIMO_PRONOSTICO.puertos || [])
-                    .filter(p => p.lugar === lugarPronostico && p.hora !== '---' && p.altura_m !== '---');
-                if (eventos.length) {
-                    eventos.forEach(ev => {
-                        html += '<div class="pronostico-fila"><span>' + ev.estado + ' — ' + ev.fecha + ' ' + ev.hora + '</span><span>' + ev.altura_m + ' m</span></div>';
-                    });
-                } else {
-                    html += '<div class="pronostico-fila"><span>Sin eventos pendientes para hoy</span></div>';
-                }
-            } else {
-                html += '<div class="pronostico-fila"><span>El SHN no publica bajamar/pleamar oficial para ' + estacion + '</span></div>';
-            }
-            html += '</div>';
-            return html;
-        }
-
-        async function mostrarMarea() {
-            const cont = document.getElementById('mareaContenido');
-            if (!mareaDatosCargados) {
-                cont.innerHTML = '<div class="marea-loading">Cargando datos del SHN…</div>';
-                await cargarDatosMarea();
-            }
-            renderMareaTab();
-        }
-
         let tramo = 'parana';
         const MAX_CD_PARANA = 12.14;
         const MAX_CD_CANALES = 12.00;
@@ -446,17 +242,15 @@ const TABLAS = {
 
         // === FUNCIONES PRINCIPALES ===
 
-        // PE -> Calado (modo Paraná, Paso 1). El resultado precarga el Paso 2.
+        // PE -> Calado (modo Paraná, Paso 1)
         function calcDesdePE() {
             const pe = parseFloat(document.getElementById('peInput').value);
             const cd = obtenerCaladoDesdePE(pe);
             document.getElementById('resultadoCD').textContent = cd !== null ? cd.toFixed(2) + " m" : "Fuera de tabla";
-            if (cd !== null) document.getElementById('paranaCaladoStep2Input').value = cd.toFixed(2);
             gtag('event', 'calc_pe_calado', {tramo, pe, calado: cd});
         }
 
-        // Calado + Profundidad al Cero -> Margen de Seguridad + Marea Necesaria
-        // Compartida entre Paso 2 de Paraná y el cálculo único de Río de la Plata
+        // Calado + Profundidad al Cero -> Margen de Seguridad + Marea Necesaria (Río de la Plata)
         function calcularMargenMarea(idCalado, idP0, idResMarea, idResMargen) {
             const p0Str = document.getElementById(idP0).value;
             const cdMaxStr = document.getElementById(idCalado).value;
@@ -497,19 +291,15 @@ const TABLAS = {
             document.getElementById('modo-canales').style.display = modo === 'canales' ? 'block' : 'none';
 
             document.getElementById('modoDesc').textContent = modo === 'parana'
-                ? 'Paso 1: PE → Calado.  Paso 2: Calado → Margen y Marea'
+                ? 'Profundidad Efectiva → Calado máximo'
                 : 'Calado + Profundidad Efectiva → Margen y Marea';
 
             // Limpiar resultados
             document.getElementById('resultadoCD').textContent = '—';
             document.getElementById('resultadoMarea').textContent = '—';
             document.getElementById('resultadoMargen').textContent = '';
-            document.getElementById('paranaResultadoMarea').textContent = '—';
-            document.getElementById('paranaResultadoMargen').textContent = '';
 
             gtag('event', 'cambio_modo', {modo});
-
-            if (modo === 'canales') mostrarMarea();
         }
 
         // Init
