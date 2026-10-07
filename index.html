@@ -31,7 +31,9 @@
         .rdp .container {background:rgba(42,76,97,.86);}
         /* Fondo: foto difuminada */
         body::before {content:""; position:fixed; inset:-24px; z-index:-1; background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.42)), url("fondo.jpg") center/cover no-repeat; filter:blur(7px);}
-        #appLogo {display:block; max-width:100px; margin:0 auto 20px;}
+        #appLogo {display:block; max-width:100px; margin:0;}
+        .logo-fila {display:flex; align-items:center; justify-content:center; gap:16px; margin:0 auto 20px;}
+        .bandera {height:48px; width:auto; border-radius:3px; box-shadow:0 1px 6px rgba(0,0,0,.5); flex:0 1 auto;}
         h2 {text-align:center; margin-bottom:20px;}
         select, input, button {width:100%; padding:12px; margin:10px 0; border-radius:4px; border:none; font-size:1em; box-sizing:border-box;}
         select, input {background:#666; color:#fff;}
@@ -82,7 +84,11 @@
 </head>
 <body>
     <div class="container">
-        <img src="logo (2).png" alt="Logo" id="appLogo">
+        <div class="logo-fila">
+            <img src="bandera-argentina.png" alt="Bandera argentina" class="bandera">
+            <img src="logo (2).png" alt="Logo" id="appLogo">
+            <img src="bandera-blanca-roja.png" alt="Bandera" class="bandera">
+        </div>
         <h2>Calculadora Náutica Oficial</h2>
 
         <div class="modo-selector">
