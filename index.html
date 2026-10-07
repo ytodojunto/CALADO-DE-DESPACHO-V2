@@ -6,6 +6,18 @@
     <title>Calculadora Náutica Oficial - 100% Exacta</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VTGH8J2KN8"></script>
+    <!-- Ventana de reglamentación -->
+    <div id="regModal" onclick="if(event.target===this)cerrarReg()">
+        <div class="reg-box">
+            <div class="reg-head">
+                <h3>Margen de seguridad mínimo bajo la quilla<small>Extracto OM 4/18 · 25/02/2025</small></h3>
+                <button class="reg-close" onclick="cerrarReg()">Cerrar</button>
+            </div>
+            <div id="regContenido"></div>
+            <a id="regPdf" class="reg-pdf" href="OM_4-18.pdf" target="_blank" rel="noopener">Ver la Ordenanza completa (PDF)</a>
+        </div>
+    </div>
+
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -48,6 +60,22 @@
         .fuente-oficial a:hover {text-decoration:underline;}
 
         .seccion-titulo {font-size:1.1em; font-weight:bold; margin:25px 0 5px; color:#fff; border-top:1px solid #555; padding-top:20px;}
+
+        /* Reglamentación (extractos OM 4/18) */
+        .reg-btn {background:#333; color:#4caf50; border:1px solid #555; margin:18px 0 0;}
+        .reg-btn:hover {background:#3a3a3a;}
+        #regModal {position:fixed; inset:0; display:none; align-items:flex-start; justify-content:center; padding:16px; background:rgba(0,0,0,.7); z-index:50; overflow-y:auto;}
+        #regModal .reg-box {width:100%; max-width:720px; background:#2b2b2b; border:1px solid #666; border-radius:10px; padding:20px 22px; margin:auto 0; line-height:1.5;}
+        #regModal .reg-head {display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+        #regModal .reg-head h3 {margin:0; font-size:1.05em;}
+        #regModal .reg-head small {color:#bbb; display:block; font-weight:normal; margin-top:2px;}
+        #regModal .reg-close {width:auto; margin:0; padding:6px 12px; background:#666;}
+        #regModal details {margin:14px 0; border:1px solid #555; border-radius:6px; background:#333;}
+        #regModal summary {cursor:pointer; padding:10px 12px; font-weight:bold; color:#4caf50;}
+        #regModal .reg-text {padding:0 14px 12px; font-size:0.88em; color:#e6e6e6; text-align:justify;}
+        #regModal .reg-text p {margin:8px 0;}
+        #regModal .reg-text p.n1 {margin-left:14px;} #regModal .reg-text p.n2 {margin-left:28px;}
+        #regModal .reg-pdf {display:none; margin-top:10px; color:#4caf50; font-weight:bold; text-decoration:none;}
     </style>
 </head>
 <body>
@@ -80,6 +108,7 @@
                 <h4>Fuente oficial (ANPyN)</h4>
                 <a href="https://www.argentina.gob.ar/economia/agencia-nacional-de-puertos-y-navegacion/planillas-de-determinantes" target="_blank" rel="noopener">Planillas de determinantes (Santa Fe–Océano, Santa Fe–Esquina, Esquina–Confluencia)</a>
             </div>
+            <button class="reg-btn" onclick="abrirReg('parana')">Ver reglamentación (OM 4/18)</button>
         </div>
 
         <!-- ===================== MODO RÍO DE LA PLATA (CANALES) ===================== -->
@@ -92,6 +121,7 @@
 
             <div class="resultado" id="resultadoMarea">—</div>
             <div class="sub-resultado" id="resultadoMargen"></div>
+            <button class="reg-btn" onclick="abrirReg('canales')">Ver reglamentación (OM 4/18)</button>
         </div>
     </div>
 
@@ -302,6 +332,61 @@ const TABLAS = {
 
             gtag('event', 'cambio_modo', {modo});
         }
+
+// === REGLAMENTACIÓN: extractos OM 4/18 (texto según VR 1-2025) ===
+const REG_P23 = `2.3. Con las obras de mejoramiento en la profundización y el balizamiento de la vía navegable troncal, con las certificaciones de obra parciales y verificado el mejoramiento de las ayudas a la navegación, el margen de seguridad mínimo bajo la quilla (MSBQ) será de DECIMAL SESENTA METROS (0,60 m) (2´) para todos los buques que cumplan con el nuevo diseño del canal.`;
+const REG_FINAL = `La Prefectura Naval Argentina revisará periódicamente dicho (MSBQ) a fin de garantizar la seguridad de la navegación, la protección ambiental y la seguridad de la vida humana en las aguas, fijando las exigencias para los buques que excedan el calado de diseño, conformando una mesa de trabajo con los diferentes actores del quehacer naviero a fin de evaluar los riesgos y la eficiencia en el uso de la vía navegable troncal. Sin perjuicio de lo hasta aquí estipulado, el capitán, cuando sea necesario y se encuentre debidamente justificado, deberá incrementar dicho (MSBQ), debiendo tener en cuenta las características particulares del buque con el que se emprenderá la navegación por el canal, al igual que los distintos factores y efectos evolutivos del mismo, particularmente la velocidad de este durante la navegación en los canales y aguas restringidas, evaluando, adoptando y aplicando las medidas adicionales de seguridad para asegurar los estándares necesarios para mantener la seguridad de la navegación del buque, preservar la protección ambiental y la integridad de la vía navegable.* * (Incorporado por V.R. 1-2025)`;
+const REG = {
+    canales: [{
+        titulo: 'Río de la Plata — Canales Punta Indio, Intermedio, Paso Banco Chico, Brown (Km 37 a Km 12) y Emilio Mitre',
+        p: [
+            [0, `2. MARGEN DE SEGURIDAD MÍNIMO BAJO LA QUILLA (1) Para navegar por los Canales PUNTA INDIO, INTERMEDIO, PASO BANCO CHICO, BROWN DESDE EL KM. 37 HASTA EL KM. 12 y EMILIO MITRE, incluidas las Zonas Contiguas de Tránsito, los buques de hasta DIEZ METROS CON TREINTA Y SEIS (10,36 m) (34’) dejarán un margen de seguridad mínimo bajo la quilla (MSBQ) no inferior a DECIMAL SESENTA METROS (0,60 m) (2’). A esos fines, los calados máximos serán calculados teniendo en consideración los distintos factores y efectos evolutivos que incidan para su determinación, particularmente la velocidad del buque durante la navegación en los canales y áreas de aguas restringidas:`],
+            [1, `2.1. Incrementos adicionales al margen de seguridad (MSBQ):`],
+            [2, `2.1.1. Para calados iguales o superiores a DIEZ CON TREINTA Y SIETE (10,37) y hasta DIEZ CON SESENTA Y SIETE (10,67) metros, el incremento de UN CENTÍMETRO CON CINCUENTA (1,5 cm) por cada centímetro adicional.`],
+            [2, `2.1.2. Para calados iguales o superiores a DIEZ CON SESENTA Y OCHO (10,68) metros, la aplicación del DIEZ POR CIENTO (10 %) del calado estático.`],
+            [1, `2.2. En ambos casos, las milésimas deberán ser redondeadas a las centésimas enteras más próximas, es decir, si la cifra finaliza en CINCO (5) o mayor, se debe redondear hacia arriba y si es CUATRO (4) o menor, se redondeará hacia abajo.`],
+            [1, REG_P23], [0, REG_FINAL]
+        ]
+    }],
+    parana: [{
+        titulo: 'Paraná Bravo, Paraná Guazú, Pasaje Talavera y Paraná hasta el Acceso al Puerto de Paraná',
+        p: [
+            [0, `2. MARGEN DE SEGURIDAD MÍNIMO BAJO LA QUILLA: Todo buque que navegue por los ríos "PARANÁ BRAVO", "PARANÁ GUAZÚ", PASAJE TALAVERA, "PARANÁ HASTA EL KM 584 (Tramo Exterior de Acceso al Puerto de Santa Fe)" y desde el citado kilómetro hasta el "ACCESO AL PUERTO DE PARANÁ", deberá dejar Margen de Seguridad Mínimo Bajo la Quilla (MSBQ) de DECIMAL SESENTA METROS (0,60 m). A esos fines, los calados máximos para efectuar la navegación, serán calculados teniendo en consideración los distintos factores y efectos evolutivos que incidan para su determinación, particularmente la velocidad del buque durante la navegación en los canales y áreas de agua restringidas.`],
+            [1, `2.1. Incrementos adicionales al margen de seguridad (MSBQ) de DECIMAL SESENTA METROS (0,60 metros):`],
+            [1, `2.1.1. Tramo Río Paraná (Complejo Portuario Timbúes - San Martín - San Lorenzo hasta Confluencia con el Río Paraná de las Palmas - Km. 180):`],
+            [2, `2.1.1.1. Para buques con calados iguales o superiores a DIEZ CON TREINTA Y SIETE METROS (10,37 m) y hasta DIEZ CON CUARENTA Y NUEVE (10,49 m), el incremento será de TRES CENTÍMETROS (3 cm) por cada centímetro adicional.`],
+            [2, `2.1.1.2. Para buques con calados iguales o superiores a DIEZ METROS CON CINCUENTA (10,50 m), se aplicará el DIEZ POR CIENTO (10%) del calado estático.`],
+            [1, `2.2. En ambos casos, las milésimas deberán ser redondeadas a las centésimas enteras más próximas; es decir, si la cifra finaliza en CINCO (5) o mayor se debe redondear hacia arriba y si es CUATRO (4) o menor se redondeará hacia abajo.`],
+            [1, REG_P23], [0, REG_FINAL]
+        ]
+    }, {
+        titulo: 'Río Paraná de las Palmas',
+        p: [
+            [0, `2. MARGEN DE SEGURIDAD MÍNIMO BAJO LA QUILLA: Todo buque que navegue por el "RÍO PARANÁ DE LAS PALMAS" con un calado de hasta DIEZ METROS CON TREINTA Y SEIS (10,36 m) (34’ 00”), deberá dejar un Margen de Seguridad Mínimo Bajo la Quilla (MSBQ) de DECIMAL SESENTA METROS (0,60 m). A esos fines, los calados máximos para efectuar la navegación, serán calculados teniendo en consideración los distintos factores y efectos evolutivos que incidan para su determinación, particularmente la velocidad del buque durante la navegación en los canales y áreas de agua restringidas.`],
+            [1, `2.1. Incrementos adicionales al margen de seguridad (MSBQ) de DECIMAL SESENTA METROS (0,60 m).`],
+            [1, `2.1.1. Tramo Río Paraná de las Palmas desde Km. 180 hasta Km. 57:`],
+            [2, `2.1.1.1. Para buques con calados iguales o superiores a DIEZ METROS CON TREINTA Y SIETE (10,37 m) y hasta DIEZ METROS CON CUARENTA Y NUEVE (10.49 m), el incremento de TRES CENTÍMETROS (3 cm) por cada centímetro adicional.`],
+            [2, `2.1.1.2. Para buques con calados iguales o superiores a DIEZ METROS CON CINCUENTA (10,50 m), la aplicación de DIEZ POR CIENTO (10%) del calado estático.`],
+            [1, `2.1.2. Tramo Río Paraná de las Palmas desde Km. 57 hasta Km. 48:`],
+            [2, `2.1.2.1. Para calados iguales o superiores a DIEZ METROS CON TREINTA Y SIETE (10,37 m) y hasta DIEZ METROS CON SESENTA Y SIETE (10,67 m), el incremento de UN CENTÍMETRO CON CINCO (1,5 cm) por cada centímetro adicional.`],
+            [2, `2.1.2.2. Para calados iguales o superiores a DIEZ METROS CON SESENTA Y OCHO (10,68 m), la aplicación del DIEZ POR CIENTO (10 %) del calado estático.`],
+            [1, `2.2. En ambos casos, las milésimas deberán ser redondeadas a las centésimas enteras más próximas, es decir, si la cifra finaliza en CINCO (5) o mayor se debe redondear hacia arriba y si es CUATRO (4) o menor se redondeará hacia abajo.`],
+            [1, REG_P23], [0, REG_FINAL]
+        ]
+    }]
+};
+function abrirReg(modo) {
+    const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    document.getElementById('regContenido').innerHTML = REG[modo].map((x, i) =>
+        '<details' + (i === 0 ? ' open' : '') + '><summary>' + esc(x.titulo) + '</summary><div class="reg-text">' +
+        x.p.map(([n, t]) => '<p class="n' + n + '">' + esc(t) + '</p>').join('') + '</div></details>').join('');
+    document.getElementById('regModal').style.display = 'flex';
+    gtag('event', 'ver_reglamentacion', {modo});
+}
+function cerrarReg() { document.getElementById('regModal').style.display = 'none'; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarReg(); });
+// El enlace al PDF solo aparece si el archivo está subido al repo
+fetch('OM_4-18.pdf', {method:'HEAD'}).then(r => { if (r.ok) document.getElementById('regPdf').style.display = 'inline-block'; }).catch(() => {});
 
         // Init
         setModo('parana');
